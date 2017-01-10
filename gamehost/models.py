@@ -23,6 +23,8 @@ def save_user_siteuser(sender, instance, **kwards):
 
 
 class Game(models.Model):
+    name = models.TextField()
+
     UNDEFINED = 'undefined'
     STRATEGY = 'strategy'
     SHOOTING = 'shooting'
@@ -39,7 +41,10 @@ class Game(models.Model):
         choices=CATEGORY_CHOICES,
         default=UNDEFINED
     )
-    developer = models.OneToOneField(SiteUser, on_delete=models.CASCADE)
+    developer = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "{}".format(self.name)
 
 
 class Highscore(models.Model):
