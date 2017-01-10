@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 # Create your models here.
 
@@ -9,8 +11,34 @@ class SiteUser(models.Model):
     developer_status = models.BooleanField(default=False)
 
 
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        SiteUser.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_siteuser(sender, instance, **kwards):
+    instance.siteuser.save()
+
+
 class Game(models.Model):
-    category = models.TextField()
+    UNDEFINED = 'undefined'
+    STRATEGY = 'strategy'
+    SHOOTING = 'shooting'
+    ARCADE = 'arcade'
+    ADVENTURE = 'adventure'
+    CATEGORY_CHOICES = (
+        (UNDEFINED, 'undefined'),
+        (STRATEGY, 'strategy'),
+        (SHOOTING, 'shooting'),
+        (ARCADE, 'arcade'),
+        (ADVENTURE, 'adventure')
+    )
+    category = models.TextField(
+        choices=CATEGORY_CHOICES,
+        default=UNDEFINED
+    )
     developer = models.OneToOneField(SiteUser, on_delete=models.CASCADE)
 
 
