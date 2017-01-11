@@ -52,6 +52,9 @@ class Highscore(models.Model):
     player = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
     score = models.IntegerField(default=0)
 
+    def __str__(self):
+        return "{}".format(self.score)
+
 
 class Transaction(models.Model):
     player = models.ForeignKey(SiteUser)

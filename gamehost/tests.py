@@ -2,12 +2,15 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test import Client
 from gamehost.models import Game
+from gamehost.models import Highscore
 # Create your tests here.
 
 
-class UserTestCase(TestCase):
+class ModelsTestCase(TestCase):
     def setUp(self):
         self.client = Client()
+
+        # Initialize test users.
         kalle = User.objects.create(username="kalle12", password="1234")
         riku = User.objects.create(username="riku9", password="2345")
         lauri = User.objects.create(username="lauri45", password="haha3")
@@ -23,6 +26,7 @@ class UserTestCase(TestCase):
         lauri.save()
         juha.save()
 
+        # Initialize test games.
         chess = Game.objects.create(
             name="Chess", category='strategy', developer=lauri.siteuser)
         pingpong = Game.objects.create(
@@ -36,6 +40,45 @@ class UserTestCase(TestCase):
         pingpong.save()
         glock.save()
         mario.save()
+
+        # Initalize test highscores
+        high1 = Highscore.objects.create(
+            player=kalle.siteuser,
+            game=mario,
+            score="9900"
+        )
+        high2 = Highscore.objects.create(
+            player=kalle.siteuser,
+            game=mario,
+            score="11000"
+        )
+        high3 = Highscore.objects.create(
+            player=kalle.siteuser,
+            game=pingpong,
+            score="290"
+        )
+        high4 = Highscore.objects.create(
+            player=riku.siteuser,
+            game=mario,
+            score="10120"
+        )
+        high5 = Highscore.objects.create(
+            player=riku.siteuser,
+            game=pingpong,
+            score="400"
+        )
+        high6 = Highscore.objects.create(
+            player=riku.siteuser,
+            game=glock,
+            score="900"
+        )
+
+        high1.save()
+        high2.save()
+        high3.save()
+        high4.save()
+        high5.save()
+        high6.save()
 
     def test_developer_status(self):
         kalle = User.objects.get(username="kalle12")
@@ -64,4 +107,28 @@ class UserTestCase(TestCase):
         self.assertQuerysetEqual(
             riku_games,
             [],
+            ordered=True)
+
+    def test_highscores(self):
+        kalle = User.objects.get(username="kalle12")
+        riku = User.objects.get(username="riku9")
+        lauri = User.objects.get(username="lauri45")
+
+        mario = Game.objects.get(name="Super Mario")
+        pong = Game.objects.get(name="Ping Pong")
+        chess = Game.objects.get(name="Chess")
+        glock = Game.objects.get(name="Glock Shot")
+
+        mario_scores = mario.highscore_set.all().order_by('-score')
+        pong_scores = pong.highscore_set.all().order_by('-score')
+        chess_scores = chess.highscore_set.all().order_by('-score')
+        glock_scores = glock.highscore_set.all().order_by('-score')
+
+        self.assertQuerysetEqual(
+            mario_scores,
+            ["<Highscore: 11000>", "<Highscore: 10120>", "<Highscore: 9900>"],
+            ordered=True)
+        self.assertQuerysetEqual(
+            pong_scores,
+            ["<Highscore: 400>", "<Highscore: 290>"],
             ordered=True)
