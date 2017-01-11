@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.test import Client
 from gamehost.models import Game
 from gamehost.models import Highscore
+from gamehost.models import Savedata
 # Create your tests here.
 
 
@@ -247,3 +248,60 @@ class ModelsTestCase(TestCase):
                 "<Highscore: 9900>", "<Highscore: 10120>",
                 "<Highscore: 11000>"],
             ordered=True)
+
+    def test_save_data(self):
+        kalle = User.objects.get(username="kalle12")
+        riku = User.objects.get(username="riku9")
+
+        mario = Game.objects.get(name="Super Mario")
+        # Delete earlier savedata entries so they don't mess up this test.
+        Savedata.objects.all().delete()
+
+        # Initialize new Savedata entry.
+        Savedata.objects.create(
+            player=kalle.siteuser,
+            game=mario,
+            data="100010101010111001010"
+        )
+
+        kalle_saves = kalle.siteuser.savedata_set.all()
+        riku_saves = riku.siteuser.savedata_set.all()
+
+        # Test that there are correct savedatas after initialization.
+        self.assertEqual(kalle_saves.count(), 1)
+        self.assertEqual(riku_saves.count(), 0)
+        self.assertQuerysetEqual(
+            kalle_saves,
+            ["<Savedata: 100010101010111001010>"])
+
+    def test_save_game_data(self):
+        kalle = User.objects.get(username="kalle12")
+        riku = User.objects.get(username="riku9")
+
+        mario = Game.objects.get(name="Super Mario")
+        # Delete earlier savedata entries to they don't mess up this test.
+        Savedata.objects.all().delete()
+
+        # Initialize new savedata entry.
+        Savedata.objects.create(
+            player=kalle.siteuser,
+            game=mario,
+            data="100010101010111001010"
+        )
+        # Call savedata. Since there already is an entry, it should be updated.
+        mario.saveGame(kalle.siteuser, "1010101010")
+        self.assertEqual(kalle.siteuser.savedata_set.count(), 1)
+        self.assertQuerysetEqual(
+            kalle.siteuser.savedata_set.all(),
+            ["<Savedata: 1010101010>"])
+
+        # Test that riku has initially 0 entries.
+        self.assertEqual(riku.siteuser.savedata_set.count(), 0)
+        # Call saveGame. Since there were no earlier entries, a new one should
+        # be created.
+        mario.saveGame(riku.siteuser, "10000000000")
+        self.assertEqual(riku.siteuser.savedata_set.count(), 1)
+        self.assertQuerysetEqual(
+            riku.siteuser.savedata_set.all(),
+            ["<Savedata: 10000000000>"]
+        )

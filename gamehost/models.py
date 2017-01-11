@@ -54,6 +54,13 @@ class Game(models.Model):
         else:
             Highscore.objects.create(player=user, game=self, score=score)
 
+    def saveGame(self, user, data):
+        player_save = self.savedata_set.filter(player=user)
+        if player_save.count() > 0:
+            player_save.update(data=data)
+        else:
+            Savedata.objects.create(player=user, game=self, data=data)
+
     def __str__(self):
         return "{}".format(self.name)
 
@@ -77,3 +84,6 @@ class Savedata(models.Model):
     player = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     data = models.TextField()
+
+    def __str__(self):
+        return "{}".format(self.data)
