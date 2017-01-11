@@ -42,6 +42,17 @@ class Game(models.Model):
         default=UNDEFINED
     )
     developer = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
+    src = models.URLField()
+
+    def addHighscore(self, score, user):
+        player_scores = self.highscore_set.filter(
+            player=user).order_by('score')
+        if player_scores.count() >= 5:
+            if (score > player_scores.first().score):
+                player_scores.first().delete()
+                Highscore.objects.create(player=user, game=self, score=score)
+        else:
+            Highscore.objects.create(player=user, game=self, score=score)
 
     def __str__(self):
         return "{}".format(self.name)

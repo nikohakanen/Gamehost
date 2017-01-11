@@ -28,62 +28,28 @@ class ModelsTestCase(TestCase):
 
         # Initialize test games.
         chess = Game.objects.create(
-            name="Chess", category='strategy', developer=lauri.siteuser)
+            name="Chess", category='strategy',
+            developer=lauri.siteuser, src="www.chess.lol")
         pingpong = Game.objects.create(
-            name="Ping Pong", category='arcade', developer=lauri.siteuser)
+            name="Ping Pong", category='arcade',
+            developer=lauri.siteuser, src="www.pingpong.lol")
         glock = Game.objects.create(
-            name="Glock Shot", category='shooting', developer=juha.siteuser)
+            name="Glock Shot", category='shooting',
+            developer=juha.siteuser, src="www.glock.lol")
         mario = Game.objects.create(
-            name="Super Mario", category='adventure', developer=lauri.siteuser)
+            name="Super Mario", category='adventure',
+            developer=lauri.siteuser, src="www.mario.lol")
 
         chess.save()
         pingpong.save()
         glock.save()
         mario.save()
 
-        # Initalize test highscores
-        high1 = Highscore.objects.create(
-            player=kalle.siteuser,
-            game=mario,
-            score="9900"
-        )
-        high2 = Highscore.objects.create(
-            player=kalle.siteuser,
-            game=mario,
-            score="11000"
-        )
-        high3 = Highscore.objects.create(
-            player=kalle.siteuser,
-            game=pingpong,
-            score="290"
-        )
-        high4 = Highscore.objects.create(
-            player=riku.siteuser,
-            game=mario,
-            score="10120"
-        )
-        high5 = Highscore.objects.create(
-            player=riku.siteuser,
-            game=pingpong,
-            score="400"
-        )
-        high6 = Highscore.objects.create(
-            player=riku.siteuser,
-            game=glock,
-            score="900"
-        )
-
-        high1.save()
-        high2.save()
-        high3.save()
-        high4.save()
-        high5.save()
-        high6.save()
-
     def test_developer_status(self):
         kalle = User.objects.get(username="kalle12")
         lauri = User.objects.get(username="lauri45")
 
+        # Tests that the developer statuses are correct.
         self.assertEqual(kalle.siteuser.developer_status, False)
         self.assertEqual(lauri.siteuser.developer_status, True)
 
@@ -96,6 +62,7 @@ class ModelsTestCase(TestCase):
         juha_games = juha.siteuser.game_set.all().order_by('name')
         riku_games = riku.siteuser.game_set.all().order_by('name')
 
+        # Tests that the games belong to their right owners.
         self.assertQuerysetEqual(
             lauri_games,
             ["<Game: Chess>", "<Game: Ping Pong>", "<Game: Super Mario>"],
@@ -109,7 +76,7 @@ class ModelsTestCase(TestCase):
             [],
             ordered=True)
 
-    def test_highscores(self):
+    def test_highscores_lists(self):
         kalle = User.objects.get(username="kalle12")
         riku = User.objects.get(username="riku9")
         lauri = User.objects.get(username="lauri45")
@@ -118,12 +85,58 @@ class ModelsTestCase(TestCase):
         pong = Game.objects.get(name="Ping Pong")
         chess = Game.objects.get(name="Chess")
         glock = Game.objects.get(name="Glock Shot")
+        # Remove old highscore entries
+        Highscore.objects.all().delete()
+
+        # Initalize test highscores
+        high1 = Highscore.objects.create(
+            player=kalle.siteuser,
+            game=mario,
+            score=9900
+        )
+        high2 = Highscore.objects.create(
+            player=kalle.siteuser,
+            game=mario,
+            score=11000
+        )
+        high3 = Highscore.objects.create(
+            player=kalle.siteuser,
+            game=pong,
+            score=290
+        )
+        high4 = Highscore.objects.create(
+            player=riku.siteuser,
+            game=mario,
+            score=10120
+        )
+        high5 = Highscore.objects.create(
+            player=riku.siteuser,
+            game=pong,
+            score=400
+        )
+        high6 = Highscore.objects.create(
+            player=riku.siteuser,
+            game=glock,
+            score=900
+        )
+
+        high1.save()
+        high2.save()
+        high3.save()
+        high4.save()
+        high5.save()
+        high6.save()
 
         mario_scores = mario.highscore_set.all().order_by('-score')
         pong_scores = pong.highscore_set.all().order_by('-score')
         chess_scores = chess.highscore_set.all().order_by('-score')
         glock_scores = glock.highscore_set.all().order_by('-score')
 
+        kalle_scores = kalle.siteuser.highscore_set.all().order_by('-score')
+        riku_scores = riku.siteuser.highscore_set.all().order_by('-score')
+        lauri_scores = lauri.siteuser.highscore_set.all().order_by('-score')
+
+        # Tests that right highscores are pointing to right games.
         self.assertQuerysetEqual(
             mario_scores,
             ["<Highscore: 11000>", "<Highscore: 10120>", "<Highscore: 9900>"],
@@ -131,4 +144,106 @@ class ModelsTestCase(TestCase):
         self.assertQuerysetEqual(
             pong_scores,
             ["<Highscore: 400>", "<Highscore: 290>"],
+            ordered=True)
+        self.assertQuerysetEqual(
+            chess_scores,
+            [],
+            ordered=True)
+        self.assertQuerysetEqual(
+            glock_scores,
+            ["<Highscore: 900>"],
+            ordered=True)
+
+        # Tests that right highscores are earned by right users.
+        self.assertQuerysetEqual(
+            kalle_scores,
+            ["<Highscore: 11000>", "<Highscore: 9900>", "<Highscore: 290>"],
+            ordered=True)
+        self.assertQuerysetEqual(
+            riku_scores,
+            ["<Highscore: 10120>", "<Highscore: 900>", "<Highscore: 400>"],
+            ordered=True)
+        self.assertQuerysetEqual(
+            lauri_scores,
+            [],
+            ordered=True)
+
+    def test_adding_highscores(self):
+        kalle = User.objects.get(username="kalle12")
+        riku = User.objects.get(username="riku9")
+
+        mario = Game.objects.get(name="Super Mario")
+
+        # Remove all old highscores, so they don't mess up this test.
+        Highscore.objects.all().delete()
+
+        # Initialize new highscores.
+        high1 = Highscore.objects.create(
+            player=kalle.siteuser,
+            game=mario,
+            score=9900
+        )
+        high2 = Highscore.objects.create(
+            player=kalle.siteuser,
+            game=mario,
+            score=11000
+        )
+        high3 = Highscore.objects.create(
+            player=kalle.siteuser,
+            game=mario,
+            score=290
+        )
+        high4 = Highscore.objects.create(
+            player=kalle.siteuser,
+            game=mario,
+            score=10120
+        )
+
+        high1.save()
+        high2.save()
+        high3.save()
+        high4.save()
+
+        # Check that there really is only four highscores.
+        self.assertEqual(mario.highscore_set.count(), 4)
+
+        # Add a new highscore, and check that it is added.
+        mario.addHighscore(200, kalle.siteuser)
+        self.assertEqual(mario.highscore_set.count(), 5)
+        self.assertQuerysetEqual(
+            mario.highscore_set.all().order_by('score'),
+            ["<Highscore: 200>", "<Highscore: 290>", "<Highscore: 9900>",
+                "<Highscore: 10120>", "<Highscore: 11000>"],
+            ordered=True)
+
+        # Try adding a sixth highscore to same user, and see that it is not
+        # added.
+        mario.addHighscore(100, kalle.siteuser)
+        self.assertEqual(mario.highscore_set.count(), 5)
+        self.assertQuerysetEqual(
+            mario.highscore_set.all().order_by('score'),
+            ["<Highscore: 200>", "<Highscore: 290>", "<Highscore: 9900>",
+                "<Highscore: 10120>", "<Highscore: 11000>"],
+            ordered=True)
+
+        # Add a new highscore to someone else, and see that it is counted
+        # properly.
+        mario.addHighscore(50, riku.siteuser)
+        self.assertEqual(mario.highscore_set.count(), 6)
+        self.assertQuerysetEqual(
+            mario.highscore_set.all().order_by('score'),
+            ["<Highscore: 50>", "<Highscore: 200>", "<Highscore: 290>",
+                "<Highscore: 9900>", "<Highscore: 10120>",
+                "<Highscore: 11000>"],
+            ordered=True)
+
+        # Add a new, better highscore to someone with already five highscores.
+        # See that the smallest is removed.
+        mario.addHighscore(400, kalle.siteuser)
+        self.assertEqual(mario.highscore_set.count(), 6)
+        self.assertQuerysetEqual(
+            mario.highscore_set.all().order_by('score'),
+            ["<Highscore: 50>", "<Highscore: 290>", "<Highscore: 400>",
+                "<Highscore: 9900>", "<Highscore: 10120>",
+                "<Highscore: 11000>"],
             ordered=True)
