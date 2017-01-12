@@ -5,5 +5,5 @@ from django.http import HttpResponse
 
 
 # Just to test how the views worked again.
-def index(request):
-    return HttpResponse("Hello! This is the index view of gamehost.")
+def homeview(request):
+    return render(request, 'base.html')

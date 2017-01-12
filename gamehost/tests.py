@@ -17,10 +17,9 @@ class ModelsTestCase(TestCase):
         lauri = User.objects.create(username="lauri45", password="haha3")
         juha = User.objects.create(username="juha88", password="tappara")
 
-        kalle.siteuser.developer_status = False
-        riku.siteuser.developer_status = False
         lauri.siteuser.developer_status = True
         juha.siteuser.developer_status = True
+        # kalle and riku should default to False
 
         kalle.save()
         riku.save()

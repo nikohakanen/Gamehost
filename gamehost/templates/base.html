@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}GameSite{% endblock %}</title>
+  </head>
+  <body>
+    <div id="topbar">
+      {% block topbar %}
+      <ul>
+        <li><a href="/" id="home">Home</a></li>
+        <li><a href="/mygames/" id="mygames">My Games</a></li>
+        <li><a href="/login/" id="login">Login</a></li>
+      </ul>
+      {% endblock %}
+    </div>
+  </body>
+</html>
