@@ -9,6 +9,19 @@ from django.db.models.signals import post_save
 class SiteUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     developer_status = models.BooleanField(default=False)
+    registration_date = models.DateField(auto_now=False, auto_now_add=True)
+
+    def get_transactions(self):
+        transactions = Transaction.objects.filter(player=self)
+        return transactions
+
+    # How to handle the money?
+    def purchase_game(self, game):
+        Transaction.objects.create(
+            player=self,
+            game=game,
+            price=game.price
+        )
 
 
 @receiver(post_save, sender=User)
@@ -43,15 +56,18 @@ class Game(models.Model):
     )
     developer = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
     src = models.URLField()
+    price = models.DecimalField(decimal_places=2)
+    publish_date = models.DateField(auto_now=False, auto_now_add=True)
 
     def addHighscore(self, score, user):
-        player_scores = self.highscore_set.filter(
-            player=user).order_by('score')
-        if player_scores.count() >= 5:
-            if (score > player_scores.first().score):
-                player_scores.first().delete()
-                Highscore.objects.create(player=user, game=self, score=score)
-        else:
+        # Remove comments if the amount of highscores is to be limited.
+        # player_scores = self.highscore_set.filter(
+        #    player=user).order_by('score')
+        # if player_scores.count() >= 5:
+        #    if (score > player_scores.first().score):
+        #        player_scores.first().delete()
+        #        Highscore.objects.create(player=user, game=self, score=score)
+        # else:
             Highscore.objects.create(player=user, game=self, score=score)
 
     def saveGame(self, user, data):
@@ -61,6 +77,9 @@ class Game(models.Model):
         else:
             Savedata.objects.create(player=user, game=self, data=data)
 
+    def get_transactions(self):
+        return Transaction.objects.filter(game=self)
+
     def __str__(self):
         return "{}".format(self.name)
 
@@ -69,6 +88,7 @@ class Highscore(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     player = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
     score = models.IntegerField(default=0)
+    date = models.DateField(auto_now=False, auto_now_add=True)
 
     def __str__(self):
         return "{}".format(self.score)
@@ -77,13 +97,18 @@ class Highscore(models.Model):
 class Transaction(models.Model):
     player = models.ForeignKey(SiteUser)
     game = models.ForeignKey(Game)
+    price = models.DecimalField(decimal_places=2)
     date = models.DateField(auto_now=False, auto_now_add=True)
+
+    def __str__(self):
+        return "{}".format(self.game)
 
 
 class Savedata(models.Model):
     player = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     data = models.TextField()
+    date = models.DateField(auto_now=False, auto_now_add=True)
 
     def __str__(self):
         return "{}".format(self.data)

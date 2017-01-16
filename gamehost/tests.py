@@ -4,6 +4,7 @@ from django.test import Client
 from gamehost.models import Game
 from gamehost.models import Highscore
 from gamehost.models import Savedata
+from gamehost.models import Transaction
 # Create your tests here.
 
 
@@ -29,16 +30,20 @@ class ModelsTestCase(TestCase):
         # Initialize test games.
         chess = Game.objects.create(
             name="Chess", category='strategy',
-            developer=lauri.siteuser, src="www.chess.lol")
+            developer=lauri.siteuser, src="www.chess.lol",
+            price=2.99)
         pingpong = Game.objects.create(
             name="Ping Pong", category='arcade',
-            developer=lauri.siteuser, src="www.pingpong.lol")
+            developer=lauri.siteuser, src="www.pingpong.lol",
+            price=5.00)
         glock = Game.objects.create(
             name="Glock Shot", category='shooting',
-            developer=juha.siteuser, src="www.glock.lol")
+            developer=juha.siteuser, src="www.glock.lol",
+            price=3.50)
         mario = Game.objects.create(
             name="Super Mario", category='adventure',
-            developer=lauri.siteuser, src="www.mario.lol")
+            developer=lauri.siteuser, src="www.mario.lol",
+            price=12.99)
 
         chess.save()
         pingpong.save()
@@ -170,7 +175,6 @@ class ModelsTestCase(TestCase):
 
     def test_adding_highscores(self):
         kalle = User.objects.get(username="kalle12")
-        riku = User.objects.get(username="riku9")
 
         mario = Game.objects.get(name="Super Mario")
 
@@ -218,24 +222,27 @@ class ModelsTestCase(TestCase):
 
         # Try adding a sixth highscore to same user, and see that it is not
         # added.
+
+        # Remove comments if there is to be a limit!!!
+        """
         mario.addHighscore(100, kalle.siteuser)
         self.assertEqual(mario.highscore_set.count(), 5)
         self.assertQuerysetEqual(
-            mario.highscore_set.all().order_by('score'),
-            ["<Highscore: 200>", "<Highscore: 290>", "<Highscore: 9900>",
-                "<Highscore: 10120>", "<Highscore: 11000>"],
-            ordered=True)
+             mario.highscore_set.all().order_by('score'),
+             ["<Highscore: 200>", "<Highscore: 290>", "<Highscore: 9900>",
+              "<Highscore: 10120>", "<Highscore: 11000>"],
+             ordered=True)
 
         # Add a new highscore to someone else, and see that it is counted
         # properly.
         mario.addHighscore(50, riku.siteuser)
         self.assertEqual(mario.highscore_set.count(), 6)
         self.assertQuerysetEqual(
-            mario.highscore_set.all().order_by('score'),
-            ["<Highscore: 50>", "<Highscore: 200>", "<Highscore: 290>",
-                "<Highscore: 9900>", "<Highscore: 10120>",
-                "<Highscore: 11000>"],
-            ordered=True)
+             mario.highscore_set.all().order_by('score'),
+             ["<Highscore: 50>", "<Highscore: 200>", "<Highscore: 290>",
+                 "<Highscore: 9900>", "<Highscore: 10120>",
+                 "<Highscore: 11000>"],
+             ordered=True)
 
         # Add a new, better highscore to someone with already five highscores.
         # See that the smallest is removed.
@@ -247,6 +254,7 @@ class ModelsTestCase(TestCase):
                 "<Highscore: 9900>", "<Highscore: 10120>",
                 "<Highscore: 11000>"],
             ordered=True)
+        """
 
     def test_save_data(self):
         kalle = User.objects.get(username="kalle12")
@@ -304,3 +312,68 @@ class ModelsTestCase(TestCase):
             riku.siteuser.savedata_set.all(),
             ["<Savedata: 10000000000>"]
         )
+
+    def test_transactions(self):
+        kalle = User.objects.get(username="kalle12")
+        riku = User.objects.get(username="riku9")
+
+        mario = Game.objects.get(name="Super Mario")
+        chess = Game.objects.get(name="Chess")
+        pong = Game.objects.get(name="Ping Pong")
+
+        # Delete all existing transactions so they don't interfere with this
+        # test.
+        Transaction.objects.all().delete()
+
+        # Create a couple transactions.
+        trans1 = Transaction.objects.create(
+            player=kalle.siteuser,
+            game=mario,
+            price=mario.price
+        )
+        trans2 = Transaction.objects.create(
+            player=kalle.siteuser,
+            game=chess,
+            price=chess.price
+        )
+
+        trans1.save()
+        trans2.save()
+
+        self.assertEqual(kalle.siteuser.transaction_set.count(), 2)
+        self.assertEqual(riku.siteuser.transaction_set.count(), 0)
+        self.assertEqual(mario.transaction_set.count(), 1)
+        self.assertEqual(pong.transaction_set.count(), 0)
+        kalle_transactions = kalle.siteuser.get_transactions()
+        self.assertQuerysetEqual(
+            kalle_transactions,
+            ["<Transaction: Super Mario>", "<Transaction: Chess>"],
+            ordered=False
+        )
+        self.assertQuerysetEqual(
+            riku.siteuser.get_transactions(),
+            [],
+            ordered=False
+        )
+        self.assertQuerysetEqual(
+            mario.get_transactions(),
+            ["<Transaction: Super Mario>"],
+            ordered=False
+        )
+        self.assertQuerysetEqual(
+            pong.get_transactions(),
+            [],
+            ordered=False
+        )
+
+    def test_purchase(self):
+        kalle = User.objects.get(username="kalle12")
+        mario = Game.objects.get(name="Super Mario")
+
+        # Remove existing transactions.
+        Transaction.objects.all().delete()
+
+        self.assertEqual(kalle.siteuser.transaction_set.count(), 0)
+
+        kalle.siteuser.purchase_game(mario)
+        self.assertEqual(kalle.siteuser.transaction_set.count(), 1)
