@@ -1,7 +1,10 @@
 <!DOCTYPE html>
+{% load static %}
+
 <html>
   <head>
     <title>{% block title %}GameSite{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'layout.css' %}"/>
   </head>
   <body>
     <div id="topbar">
@@ -12,6 +15,10 @@
         <li><a href="/login/" id="login">Login</a></li>
       </ul>
       {% endblock %}
+    </div>
+
+    <div id="content">
+      {% block content %}{% endblock %}
     </div>
   </body>
 </html>

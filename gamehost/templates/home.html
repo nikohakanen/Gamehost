@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if games %}
+{% for g in games %}{{g.name}},{% endfor %}
+
+{% else %}
+No games available.
+{% endif %}
+
+{% endblock %}
