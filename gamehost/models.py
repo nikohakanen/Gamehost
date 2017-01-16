@@ -56,7 +56,7 @@ class Game(models.Model):
     )
     developer = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
     src = models.URLField()
-    price = models.DecimalField(decimal_places=2)
+    price = models.DecimalField(decimal_places=2, max_digits=6)
     publish_date = models.DateField(auto_now=False, auto_now_add=True)
 
     def addHighscore(self, score, user):
@@ -97,7 +97,7 @@ class Highscore(models.Model):
 class Transaction(models.Model):
     player = models.ForeignKey(SiteUser)
     game = models.ForeignKey(Game)
-    price = models.DecimalField(decimal_places=2)
+    price = models.DecimalField(decimal_places=2, max_digits=6)
     date = models.DateField(auto_now=False, auto_now_add=True)
 
     def __str__(self):

@@ -20,5 +20,5 @@ from gamehost import views
 urlpatterns = [
     url(r'^$', views.homeview, name="homeview"),
     url(r'^admin/', admin.site.urls),
-    url(r'^index/', include('gamehost.urls')),
+    #url(r'^index/', include('gamehost.urls')),
 ]
