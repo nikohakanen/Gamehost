@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from gamehost.models import Game
+from gamehost.models import User
 
 # Create your views here.
 
