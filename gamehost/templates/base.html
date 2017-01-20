@@ -12,7 +12,16 @@
       <ul>
         <li><a href="/" id="home">Home</a></li>
         <li><a href="/mygames/" id="mygames">My Games</a></li>
-        <li><a href="/login/" id="login">Login</a></li>
+        {% if user.is_authenticated %}
+          <li><a href="/accounts/profile" id="profile">{{ user.username }}</a></li>
+          <li>|</li>
+          <li><a href="/logout/" id="logout">Logout</a></li>
+        {% else %}
+          <li><a href="/login/" id="login">Login</a></li>
+          <li>|</li>
+          <li><a href="/register/" id="register">Register</a></li>
+        {% endif %}
+
       </ul>
       {% endblock %}
     </div>
