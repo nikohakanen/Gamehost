@@ -1,3 +1,40 @@
 #topbar li {
   display: inline;
 }
+header {
+  padding: 20px, 0;
+}
+
+header .row {
+  display: flex;
+  align-items: center;
+}
+
+header nav {
+  display: flex;
+  justify-content: flex_end;
+}
+
+header p {
+  padding: 0 20px;
+  margin: 0;
+}
+
+.jumbotron {
+  background-image: url('http://www.queness.com/resources/images/jsgames2/1.jpg');
+  background-size: cover;
+  color: #ffffff;
+  height: 400px;
+  align-items: center;
+  display: flex;
+}
+
+.jumbotron h2 {
+  color: #ff0000;
+  font-size: 60px;
+}
+
+.jumbotron h3 {
+  color: #ff0000;
+
+}

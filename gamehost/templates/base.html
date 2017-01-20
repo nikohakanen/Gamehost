@@ -4,27 +4,41 @@
 <html>
   <head>
     <title>{% block title %}GameSite{% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="{% static 'layout.css' %}"/>
   </head>
   <body>
-    <div id="topbar">
-      {% block topbar %}
-      <ul>
-        <li><a href="/" id="home">Home</a></li>
-        <li><a href="/mygames/" id="mygames">My Games</a></li>
-        {% if user.is_authenticated %}
-          <li><a href="/accounts/profile" id="profile">{{ user.username }}</a></li>
-          <li>|</li>
-          <li><a href="/logout/" id="logout">Logout</a></li>
-        {% else %}
-          <li><a href="/login/" id="login">Login</a></li>
-          <li>|</li>
-          <li><a href="/register/" id="register">Register</a></li>
-        {% endif %}
-
-      </ul>
-      {% endblock %}
-    </div>
+    <header class="container">
+      <div class="row">
+      <!-- <div id="topbar">!-->
+      <!--{% block topbar %}!-->
+        <h1 class="col-sm-8">Gamehost</h1>
+      <!--<ul>!-->
+        <nav class="col-sm-4">
+          <p><a href="/" id="home">Home</a></p>
+          <p><a href="/mygames/" id="mygames">My Games</a></p>
+          {% if user.is_authenticated %}
+            <p><a href="/accounts/profile" id="profile">{{ user.username }}</a></p>
+            <p>|</p>
+            <p><a href="/logout/" id="logout">Logout</a></p>
+            {% else %}
+              <p><a href="/login/" id="login">Login</a></p>
+              <p>|</p>
+              <p><a href="/register/" id="register">Register</a></p>
+            {% endif %}
+        </nav>
+      <!--</ul>!-->
+  <!--    {% endblock %}!-->
+      </div>
+    </header>
+    <section class="jumbotron">
+      <div class="container">
+        <div class="row text-center">
+          <h2>Git Gud!</h2>
+          <h3>Web Software Development</h3>
+        </div>
+      </div>
+    </section>
 
     <div id="content">
       {% block content %}{% endblock %}
