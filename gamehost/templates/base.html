@@ -31,14 +31,9 @@
   <!--    {% endblock %}!-->
       </div>
     </header>
-    <section class="jumbotron">
-      <div class="container">
-        <div class="row text-center">
-          <h2>Git Gud!</h2>
-          <h3>Web Software Development</h3>
-        </div>
-      </div>
-    </section>
+    {% block decoration %}
+    
+    {% endblock %}
 
     <div id="content">
       {% block content %}{% endblock %}
