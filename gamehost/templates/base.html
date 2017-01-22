@@ -16,14 +16,14 @@
       <!--<ul>!-->
         <nav class="col-sm-4">
           <p><a href="/" id="home">Home</a></p>
-          <p><a href="/mygames/" id="mygames">My Games</a></p>
           {% if user.is_authenticated %}
+            <p><a href="/mygames/" id="mygames">My Games</a></p>
             <p><a href="/accounts/profile" id="profile">{{ user.username }}</a></p>
-            <p>|</p>
+            <!--<p>|</p>!-->
             <p><a href="/logout/" id="logout">Logout</a></p>
             {% else %}
               <p><a href="/login/" id="login">Login</a></p>
-              <p>|</p>
+              <!--<p>|</p>!-->
               <p><a href="/register/" id="register">Register</a></p>
             {% endif %}
         </nav>

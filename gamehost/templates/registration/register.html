@@ -6,8 +6,25 @@
 
 <form action="/register/" method="post">
     {% csrf_token %}
-    {{ user_form }}
-    {{ siteuser_form }}
+    <!--{{ user_form.as_table }}!-->
+    {% for field in user_form %}
+      <div class="fieldWrapper">
+        {{ field.errors }}
+        {{ field.label_tag}} {{ field }}
+        {% if field.help_text %}
+          <p class="help"> {{ field.help_text|safe }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+    {% for field in siteuser_form %}
+      <div class="fieldWrapper">
+        {{ field.errors }}
+        {{ field.label_tag}} {{ field }}
+        {% if field.help_text %}
+          <p class="help"> {{ field.help_text|safe }}</p>
+        {% endif %}
+    {% endfor %}
+    <!--{{ siteuser_form.as_table }}!-->
     <input type="submit" value="Submit" />
 </form>
 
