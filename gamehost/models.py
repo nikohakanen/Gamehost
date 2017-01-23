@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.core.files.storage import get_storage_class
+from django.conf import settings
 
 # Create your models here.
 
@@ -58,6 +60,10 @@ class Game(models.Model):
     src = models.URLField()
     price = models.DecimalField(decimal_places=2, max_digits=6)
     publish_date = models.DateField(auto_now=False, auto_now_add=True)
+    thumbnail = models.URLField(
+        null=True,
+        blank=True
+    )
 
     def addHighscore(self, score, user):
         # Remove comments if the amount of highscores is to be limited.

@@ -15,7 +15,20 @@
 {% block content %}
 
 {% if games %}
-{% for g in games %}{{g.name}},{% endfor %}
+<section class="container">
+  <div class="col-sm-6">
+    {% for g in games %}
+    <div class="row game_box">
+      <h1>{{ g.name }}</h1>
+      <img class="game_thumbnail" src= {{g.thumbnail}}>
+      <h3>{{ g.category }}</h3>
+      <p>Price: {{ g.price }}€</p>
+      <p class="developer_name"> Developer: {{ g.developer.user.username }}</p>
+
+    </div>
+    {% endfor %}
+  </div>
+</section>
 
 {% else %}
 No games available.
