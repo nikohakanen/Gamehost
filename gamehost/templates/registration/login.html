@@ -2,7 +2,7 @@
 
 {% block content %}
 
-{% if form.errors %}
+{% if form.errors %} <!-- Tässä pitäisi kertoa jos käyttäjä ei ole aktivoitu -->
 <p>Your username and password didn't match. Please try again.</p>
 {% endif %}
 
