@@ -20,7 +20,7 @@
     {% for g in games %}
     <div class="row game_box">
       <h1>{{ g.name }}</h1>
-      <img class="game_thumbnail" src= {{g.thumbnail}}>
+      <img class="game_thumbnail right" src= {{g.thumbnail}}>
       <h3>{{ g.category }}</h3>
       <p>Price: {{ g.price }}€</p>
       <p class="developer_name"> Developer: {{ g.developer.user.username }}</p>

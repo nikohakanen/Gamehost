@@ -1,20 +1,31 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from gamehost.models import Game, SiteUser
 from gamehost.forms import UserForm, SiteUserForm
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 # Create your views here.
 
 # Just to test how the views worked again.
 def homeview(request):
-
     game_list = Game.objects.all()
-
     return render(request, 'home.html', {'games': game_list})
 
-def profile(request):
-    return HttpResponse("Succesfully logged in!")
+
+@login_required
+def profile(request, user_id):
+    try:
+        profile = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        raise Http404("Profile does not exist")
+    else:
+        if int(request.user.id) is not int(user_id):
+            return HttpResponse("Permission denied")
+        else:
+            return render(request, 'profile.html', {'profile': profile})
+
 
 
 def register(request):

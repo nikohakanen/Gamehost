@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^$', views.homeview, name="homeview"),
     url(r'^home/$', views.homeview, name="homeview"),
     url(r'^admin/', admin.site.urls),
-    url(r'^accounts/profile/$', views.profile),
+    url(r'^accounts/profile/(?P<user_id>[0-9]+)/$', views.profile),
     url(r'^register/$', views.register)
     #url(r'^index/', include('gamehost.urls')),
 ]

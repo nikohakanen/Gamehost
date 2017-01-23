@@ -47,10 +47,18 @@ header p {
   position: relative;
   margin-top: 5px;
   margin-bottom: 5px;
+  overflow: auto;
 }
 
-.game_thumbnail {
-  float: right;
+ .game_thumbnail {
   width: 150px;
   height: 100px;
+}
+
+.right {
+  float: right;
+}
+
+.inline {
+  display: inline-block;
 }

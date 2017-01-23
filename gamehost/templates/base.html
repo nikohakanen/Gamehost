@@ -18,7 +18,7 @@
           <p><a href="/" id="home">Home</a></p>
           {% if user.is_authenticated %}
             <p><a href="/mygames/" id="mygames">My Games</a></p>
-            <p><a href="/accounts/profile" id="profile">{{ user.username }}</a></p>
+            <p><a href="/accounts/profile/{{user.id}}/" id="profile">{{ user.username }}</a></p>
             <!--<p>|</p>!-->
             <p><a href="/logout/" id="logout">Logout</a></p>
             {% else %}
@@ -32,7 +32,7 @@
       </div>
     </header>
     {% block decoration %}
-    
+
     {% endblock %}
 
     <div id="content">

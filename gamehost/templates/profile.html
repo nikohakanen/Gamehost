@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        <h1> Profile: {{ user.username }}</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <p> Register date: {{ user.siteuser.registration_date }}</p>
+        <p> Games purchased: {{ user.siteuser.transaction_set.count }}</p>
+      </div>
+    </div>
+    {% if user.siteuser.developer_status %}
+      <div class="row">
+        <div class="col-sm-6">
+          <h1> Developer information</h1>
+        </div>
+      </div>
+      {% if user.siteuser.game_set.count > 0 %}
+      <div class="row">
+        <div class="col-sm-6">
+          <p> Own games </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          {% for game in user.siteuser.game_set.all %}
+            <div class="game_box inline">
+              <h1>{{ game.name }}</h1>
+              <img class="game_thumbnail" src={{ game.thumbnail }}>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    {% endif %}
+  </section>
+{% endblock %}
