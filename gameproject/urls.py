@@ -27,6 +27,6 @@ urlpatterns = [
     url(r'^register/$', views.register),
     url(r'^activation/sent/$', TemplateView.as_view(template_name='registration/activationsent.html')), #These could have 1 view and 1 template to display messages
     url(r'^activation/success/$', TemplateView.as_view(template_name='registration/activationsuccess.html')), #These could have 1 view and 1 template to display messages
-    url(ur'^activate/(?P<key>.*)/$', views.activate),
+    url(r'^activate/(?P<key>.*)/$', views.activate),
     #url(r'^index/', include('gamehost.urls')),
 ]
