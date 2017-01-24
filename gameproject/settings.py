@@ -29,6 +29,7 @@ DEBUG = True
 # Application definition
 
 INSTALLED_APPS = [
+    'gamehost.apps.GamehostConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,7 +40,6 @@ INSTALLED_APPS = [
     # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
-    'gamehost.apps.GamehostConfig',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -137,5 +137,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 LOGIN_REDIRECT_URL= '/home/'
+LOGOUT_URL= '/home/'
+LOGOUT_REDIRECT_URL= '/home/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

@@ -25,8 +25,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/profile/(?P<user_id>[0-9]+)/$', views.profile),
     url(r'^register/$', views.register),
-    url(r'^activation/sent/$', TemplateView.as_view(template_name='registration/activationsent.html')), #These could have 1 view and 1 template to display messages
-    url(r'^activation/success/$', TemplateView.as_view(template_name='registration/activationsuccess.html')), #These could have 1 view and 1 template to display messages
     url(r'^activate/(?P<key>.*)/$', views.activate),
+    url(r'^logout_page/', views.logout_view),
     #url(r'^index/', include('gamehost.urls')),
 ]

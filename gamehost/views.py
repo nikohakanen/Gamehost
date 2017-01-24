@@ -1,15 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 from gamehost.models import Game, SiteUser
 from gamehost.forms import UserForm, SiteUserForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from datetime import timedelta
 from django.core.signing import TimestampSigner, SignatureExpired
-from django.core import signing
-from django.core import mail
-from django.shortcuts import redirect
+from django.core import signing, mail
 
 # Create your views here.
 
@@ -31,6 +29,9 @@ def profile(request, user_id):
         else:
             return render(request, 'profile.html', {'profile': profile})
 
+def logout_view(request):
+    logout(request)
+    return render(request, 'message.html', {'message': 'Logged out.'})
 
 
 def register(request):
@@ -57,7 +58,7 @@ def register(request):
             with mail.get_connection() as connection:
                 mail.EmailMessage(
                     'Your activation link', message, 'admin@gamesite.fi', [user.email], connection=connection, ).send()
-            return redirect('../activation/sent') #This could have 1 view and 1 template to display messages
+            return render(request, 'message.html', {'message': 'An activation link was sent to your email adress!'})
     else:
         user_form = UserForm(prefix='user')
         siteuser_form = SiteUserForm(prefix='siteuser')
@@ -72,11 +73,11 @@ def activate(request, key):
         if user.is_active == False:
             user.is_active = True
             user.save()
-            return redirect('../../activation/success/') #This could have 1 view and 1 template to display messages
+            return render(request, 'message.html', {'message': 'Your account has been succesfully activated! Please login.'})
         else:
-            raise Http404("The user has been already activated!")
+            return render(request, 'message.html', {'message': "The user has already been activated!"})
 
     except SignatureExpired:
-        raise Http404("Activation link has been expired")
+        return render(request, 'message.html', {'message': "The activation link has been expired"})
     except signing.BadSignature:
         raise Http404("Invalid activation link")
