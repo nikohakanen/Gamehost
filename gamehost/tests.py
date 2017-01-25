@@ -5,6 +5,9 @@ from gamehost.models import Game
 from gamehost.models import Highscore
 from gamehost.models import Savedata
 from gamehost.models import Transaction
+
+from gamehost.forms import UserForm, SiteUserForm
+from django.core import mail
 # Create your tests here.
 
 
@@ -377,3 +380,12 @@ class ModelsTestCase(TestCase):
 
         kalle.siteuser.purchase_game(mario)
         self.assertEqual(kalle.siteuser.transaction_set.count(), 1)
+
+class ViewsTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_register(self):
+        response = self.client.post('/register/', {'user-username': 'Dean', 'user-password': 'secret', 'user-email': 'dean@dena.fi', 'siteuser-developer_status': True})
+        self.assertEqual(response.templates[0].name, 'message.html')
+        self.assertEqual(mail.outbox[0].subject, 'Your activation link')
