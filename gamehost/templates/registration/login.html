@@ -3,7 +3,7 @@
 {% block content %}
 
 {% if form.errors %}
-  {% if user.is_active == False %}
+  {% if 'This account is inactive.' in form.non_field_errors %}
   <p>Please activate your account via the activation link sent to your email!</p>
   {% else %}
   <p>Your username and password didn't match. Please try again.</p>
