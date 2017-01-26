@@ -395,7 +395,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(response1.templates[0].name, 'message.html')
         self.assertEqual(mail.outbox[0].subject, 'Your activation link')
 
-        #Test that you can't login before activating the account
+        #Test that the user can't login before activating the account
         response2 = self.client.post('/login/', {'username': 'Dean', 'password': 'secret'})
         self.assertFormError(response2, 'form', None, 'This account is inactive.', msg_prefix='')
 
@@ -403,11 +403,11 @@ class ViewsTestCase(TestCase):
         parts = mail.outbox[0].body.split('testserver')
         path = parts[1]
 
-        response3 = self.client.get(path)
-        #print(response2.content)
-        #Check that is user is now active
+        self.client.get(path)
+        #Check that the user is now active
         user = User.objects.get(username='Dean')
         self.assertEqual(user.is_active, True)
 
-    def test_login(self):
-        pass
+        #Test that the user can now login
+        response4 = self.client.post('/login/', {'username': 'Dean', 'password': 'secret'})
+        self.assertEqual(response4.content, '')
