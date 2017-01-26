@@ -25,10 +25,7 @@
         {% endif %}
       </div>
       <div class="col-sm-4 highscores">
-        <h3> Highscores </h3>
-        {% for score in highscores %}
-          <p> {{ score.score }} {{ score.player.user.username }} </p>
-        {% endfor %}
+        {% include "highscore.html" %}
       </div>
     </div>
   </section>

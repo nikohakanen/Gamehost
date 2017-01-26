@@ -1,0 +1,4 @@
+<h3> Highscores </h3>
+{% for score in highscores %}
+  <p> {{ score.score }} {{ score.player.user.username }} </p>
+{% endfor %}

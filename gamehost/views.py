@@ -46,11 +46,14 @@ def game(request, game_id):
 
 def add_highscore(request):
     score = Highscore()
-    score.game = Game.objects.get(name=request.GET.get('game'))
-    score.player = User.objects.get(username=request.GET.get('user')).siteuser
+    game = Game.objects.get(name=request.GET.get('game'))
+    score.game = game
+    user = User.objects.get(username=request.GET.get('user'))
+    score.player = user.siteuser
     score.score = request.GET.get('score')
     score.save()
-    return render(request, 'message.html', {'message': 'Highscore added.'})
+    highscores = game.get_highscores(user.siteuser, False)
+    return render(request, 'highscore.html', {'highscores': highscores})
 
 
 def logout_view(request):

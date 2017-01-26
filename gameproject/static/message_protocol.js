@@ -11,7 +11,7 @@ $(document).ready(function () {
         data: { 'score': score, 'game': game,
           'user': user},
         success: function(data){
-          window.location.reload();
+          $(".highscores").html(data)
         }
       });
     }
