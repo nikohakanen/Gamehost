@@ -98,7 +98,7 @@ class Game(models.Model):
             query_set = Highscore.objects.filter(game=self, user=user)
         else:
             query_set = Highscore.objects.filter(
-                game=self).order_by('score')[:5]
+                game=self).order_by('-score')[:5]
         if query_set.count() > 5:
             return query_set[:5]
         else:

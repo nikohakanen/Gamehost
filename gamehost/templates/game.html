@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <script>
+    var game = '{{ game }}';
+    var user = '{{ user }}';
+  </script>
+
   <section class="container">
     <div class="row">
       <div class="col-sm-6">
@@ -11,6 +16,7 @@
       <div class="col-sm-8">
         <iframe class="game" src={{ game.src }}></iframe>
         <h6> Price: {{ game.price }}</h6>
+        <p id="testing"> Testi </p>
         {% if has_purchased %}
           <button type="button">Play</button>
         {% endif %}
