@@ -2,8 +2,12 @@
 
 {% block content %}
 
-{% if form.errors %} <!-- Tässä pitäisi kertoa jos käyttäjä ei ole aktivoitu -->
-<p>Your username and password didn't match. Please try again.</p>
+{% if form.errors %}
+  {% if user.is_active == False %}
+  <p>Please activate your account via the activation link sent to your email!</p>
+  {% else %}
+  <p>Your username and password didn't match. Please try again.</p>
+  {% endif %}
 {% endif %}
 
 {% if next %}

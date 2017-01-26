@@ -386,6 +386,28 @@ class ViewsTestCase(TestCase):
         self.client = Client()
 
     def test_register(self):
-        response = self.client.post('/register/', {'user-username': 'Dean', 'user-password': 'secret', 'user-email': 'dean@dena.fi', 'siteuser-developer_status': True})
-        self.assertEqual(response.templates[0].name, 'message.html')
+        response1 = self.client.post('/register/', {'user-username': 'Dean', 'user-password': 'secret', 'user-email': 'dean@dena.fi', 'siteuser-developer_status': True})
+
+        user = User.objects.get(username='Dean')
+
+        #Test that user is not active yet, he was redirected to the right page, and that the activation email was sent
+        self.assertEqual(user.is_active, False)
+        self.assertEqual(response1.templates[0].name, 'message.html')
         self.assertEqual(mail.outbox[0].subject, 'Your activation link')
+
+        #Test that you can't login before activating the account
+        response2 = self.client.post('/login/', {'username': 'Dean', 'password': 'secret'})
+        self.assertFormError(response2, 'form', None, 'This account is inactive.', msg_prefix='')
+
+        #Get the activation link from the email message
+        parts = mail.outbox[0].body.split('testserver')
+        path = parts[1]
+
+        response3 = self.client.get(path)
+        #print(response2.content)
+        #Check that is user is now active
+        user = User.objects.get(username='Dean')
+        self.assertEqual(user.is_active, True)
+
+    def test_login(self):
+        pass

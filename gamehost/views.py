@@ -70,6 +70,7 @@ def activate(request, key):
         signer = TimestampSigner()
         user_id = signer.unsign(key, max_age=timedelta(days=2))
         user = User.objects.get(id=user_id)
+
         if user.is_active == False:
             user.is_active = True
             user.save()
