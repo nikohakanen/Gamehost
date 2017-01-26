@@ -29,6 +29,19 @@ def profile(request, user_id):
         else:
             return render(request, 'profile.html', {'profile': profile})
 
+@login_required
+def game(request, game_id):
+    try:
+        game = Game.objects.get(pk=game_id)
+    except Game.DoesNotExist:
+        raise Http404("Game not found!")
+    else:
+        has_purchased = request.user.siteuser.has_purchased_game(game)
+        highscores = game.get_highscores(request.user.siteuser, False)
+        return render(request, 'game.html', {'game': game,
+                                             'has_purchased': has_purchased,
+                                             'highscores': highscores})
+
 def logout_view(request):
     logout(request)
     return render(request, 'message.html', {'message': 'Logged out.'})

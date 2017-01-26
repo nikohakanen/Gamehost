@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        <h1> {{ game.name }} </h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-8">
+        <iframe class="game" src={{ game.src}}></iframe>
+        <h6> Price: {{ game.price }}</h6>
+        {% if has_purchased %}
+          <button type="button">Play</button>
+        {% endif %}
+        {% if not has_purchased %}
+          <button type="button">Purchase</button>
+        {% endif %}
+      </div>
+      <div class="col-sm-4 highscores">
+        <h3> Highscores </h3>
+        {% for score in highscores %}
+          <p> {{ score.score }} {{ score.player.user.username }} </p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

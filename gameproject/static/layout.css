@@ -62,3 +62,9 @@ header p {
 .inline {
   display: inline-block;
 }
+
+.game {
+  width: 100%;
+  padding-top: 56.25%;
+  background: #000000;
+}

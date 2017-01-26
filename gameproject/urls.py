@@ -27,5 +27,6 @@ urlpatterns = [
     url(r'^register/$', views.register),
     url(r'^activate/(?P<key>.*)/?$', views.activate),
     url(r'^logout_page/', views.logout_view),
+    url(r'^game/(?P<game_id>[0-9]+)/$', views.game),
     #url(r'^index/', include('gamehost.urls')),
 ]

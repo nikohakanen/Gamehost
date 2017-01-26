@@ -25,6 +25,13 @@ class SiteUser(models.Model):
             price=game.price
         )
 
+    def has_purchased_game(self, game):
+        query = Transaction.objects.filter(player=self, game=game)
+        if query.count() >= 1:
+            return True
+        else:
+            return False
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -85,6 +92,17 @@ class Game(models.Model):
 
     def get_transactions(self):
         return Transaction.objects.filter(game=self)
+
+    def get_highscores(self, user, own):
+        if (own):
+            query_set = Highscore.objects.filter(game=self, user=user)
+        else:
+            query_set = Highscore.objects.filter(
+                game=self).order_by('score')[:5]
+        if query_set.count() > 5:
+            return query_set[:5]
+        else:
+            return query_set
 
     def __str__(self):
         return "{}".format(self.name)
