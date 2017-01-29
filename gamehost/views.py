@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
-from gamehost.models import Game, SiteUser, Highscore
+from gamehost.models import Game, Highscore, Savedata
 from gamehost.forms import UserForm, SiteUserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -54,6 +54,15 @@ def add_highscore(request):
     score.save()
     highscores = game.get_highscores(user.siteuser, False)
     return render(request, 'highscore.html', {'highscores': highscores})
+
+
+def save_game(request):
+    game = Game.objects.get(name=request.GET.get('game'))
+    user = User.objects.get(username=request.GET.get('user'))
+    data = request.GET.get('game_state')
+    save = game.saveGame(user.siteuser, data)
+    date = save.date.strftime("%B %d, %Y")
+    return HttpResponse('Last saved ' + date)
 
 
 def logout_view(request):

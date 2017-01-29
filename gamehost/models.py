@@ -84,11 +84,18 @@ class Game(models.Model):
             Highscore.objects.create(player=user, game=self, score=score)
 
     def saveGame(self, user, data):
-        player_save = self.savedata_set.filter(player=user)
-        if player_save.count() > 0:
-            player_save.update(data=data)
-        else:
-            Savedata.objects.create(player=user, game=self, data=data)
+        try:
+            save = Savedata.objects.get(player=user, game=self)
+            save.data = data
+            save.save()
+            return save
+        except Savedata.DoesNotExist:
+            save = Savedata()
+            save.player = user
+            save.game = self
+            save.data = data
+            save.save()
+            return save
 
     def get_transactions(self):
         return Transaction.objects.filter(game=self)

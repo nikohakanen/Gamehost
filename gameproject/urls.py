@@ -29,5 +29,6 @@ urlpatterns = [
     url(r'^logout_page/', views.logout_view),
     url(r'^game/(?P<game_id>[0-9]+)/$', views.game),
     url(r'^addscore/$', views.add_highscore),
+    url(r'^savegame/$', views.save_game),
     #url(r'^index/', include('gamehost.urls')),
 ]

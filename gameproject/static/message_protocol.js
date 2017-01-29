@@ -14,6 +14,17 @@ $(document).ready(function () {
           $(".highscores").html(data)
         }
       });
+    } else if (data.messageType == "SAVE"){
+      var game_state = data.gameState;
+      game_state = JSON.stringify(game_state);
+      $.ajax({
+        url: '/savegame/',
+        data: { 'game_state': game_state, 'game': game,
+          'user': user},
+        success: function(data){
+          $("#last_saved").text(data);
+        }
+      });
     }
   });
 });
