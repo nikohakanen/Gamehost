@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 from gamehost.models import Game, Highscore, Savedata
 from gamehost.forms import UserForm, SiteUserForm
 from django.contrib.auth import authenticate, login, logout
@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from datetime import timedelta
 from django.core.signing import TimestampSigner, SignatureExpired
 from django.core import signing, mail
+import json
 
 # Create your views here.
 
@@ -63,6 +64,17 @@ def save_game(request):
     save = game.saveGame(user.siteuser, data)
     date = save.date.strftime("%B %d, %Y")
     return HttpResponse('Last saved ' + date)
+
+
+def load_game(request):
+    game = Game.objects.get(name=request.GET.get('game'))
+    user = User.objects.get(username=request.GET.get('user'))
+    msg = game.loadGame(user.siteuser)
+    if msg is not "No data found":
+        return JsonResponse({'messageType': 'LOAD', 'gameState': msg})
+    else:
+        return JsonResponse({'messageType': 'ERROR',
+                            'info': 'Gamestate could not be loaded.'})
 
 
 def logout_view(request):

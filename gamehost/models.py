@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.core.files.storage import get_storage_class
 from django.conf import settings
+import json
 
 # Create your models here.
 
@@ -96,6 +97,15 @@ class Game(models.Model):
             save.data = data
             save.save()
             return save
+
+    def loadGame(self, user):
+        try:
+            load = Savedata.objects.get(player=user, game=self)
+            data = json.loads(load.data)
+            return data
+        except Savedata.DoesNotExist:
+            msg = "No data found"
+            return msg
 
     def get_transactions(self):
         return Transaction.objects.filter(game=self)
