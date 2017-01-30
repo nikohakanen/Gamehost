@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Add new game</h1>
+
+<p>Please fill in game information</p>
+
+<form action="/add_game/" method="post">
+    {% csrf_token %}
+    {% for field in game_form %}
+      <div class="fieldWrapper">
+        {{ field.errors }}
+        {{ field.label_tag}} {{ field }}
+        {% if field.help_text %}
+          <p class="help"> {{ field.help_text|safe }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+    <input type="submit" value="Submit" />
+</form>
+
+{% endblock %}

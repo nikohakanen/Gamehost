@@ -409,5 +409,12 @@ class ViewsTestCase(TestCase):
         self.assertEqual(user.is_active, True)
 
         #Test that the user can now login
-        response4 = self.client.post('/login/', {'username': 'Dean', 'password': 'secret'})
-        self.assertEqual(response4.content, '')
+        response3 = self.client.post('/login/', {'username': 'Dean', 'password': 'secret'})
+        self.assertEqual(response3.content, '')
+
+        #Test that an user that hasn't been registered can't login
+        response4 = self.client.post('/login/', {'username': 'FakeUser', 'password': 'fakesecret'})
+        self.assertEqual(response4.context['form'].non_field_errors() != '', True)
+
+    def test_add_game(self):
+        pass

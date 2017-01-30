@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404, JsonResponse
 from gamehost.models import Game, Highscore, Savedata
-from gamehost.forms import UserForm, SiteUserForm
+from gamehost.forms import UserForm, SiteUserForm, GameForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -29,6 +29,25 @@ def profile(request, user_id):
             return HttpResponse("Permission denied")
         else:
             return render(request, 'profile.html', {'profile': profile})
+
+@login_required(login_url='/login/')
+def add_game(request):
+    if request.user.siteuser.developer_status == False:
+        return render(request, 'message.html', {'message': 'Please register as a developer if you want to add games.'})
+    if request.method == 'POST':
+        game_form = GameForm(request.POST)
+
+        if game_form.is_valid():
+            newgame = game_form.save(commit=False)
+            newgame.developer = request.user.siteuser # !!! or request.user ???
+            newgame.save()
+            game_form.save_m2m() #save the many-to-many data for the form
+            return render(request, 'message.html', {'message': 'Your game was added!'})
+    else:
+        game_form = GameForm()
+
+    return render(request, 'add_game.html', {'game_form': game_form })
+
 
 @login_required(login_url='/login/')
 def game(request, game_id):
