@@ -14,19 +14,33 @@
     </div>
     <div class="row">
       <div class="col-sm-8">
+        {% if has_purchased or game.developer == user.siteuser and user.siteuser.developer_status == 1 %}
         <iframe id="game" src={{ game.src }}></iframe>
-        <h6> Price: {{ game.price }}</h6>
         <p id="last_saved"></p>
-        {% if has_purchased %}
-          <button type="button">Play</button>
-        {% endif %}
-        {% if not has_purchased %}
-          <button type="button">Purchase</button>
+        {% else %}
+        <image id="img" src={{ game.thumbnail }}>
+        <h6> Price: {{ game.price }}</h6>
+        <button type="button">Purchase</button>
         {% endif %}
       </div>
       <div class="col-sm-4 highscores">
         {% include "highscore.html" %}
       </div>
     </div>
+    {% if user.siteuser.developer_status == 1 and game.developer == user.siteuser %}
+    <div class="row">
+      <h3>Developer options</h3>
+      <div class="col-sm-4">
+        <p class="dev_op">Change price</p>
+        <p class="dev_op">Change thumbnail</p>
+        <p class="dev_op">Change category</p>
+        <p class="dev_op">Change URL</p>
+        <p class="dev_op">Show sales statistics</p>
+        <p class="dev_op">Remove game</p>
+      </div>
+      <div class="col-sm-6 game_info">
+      </div>
+    </div>
+    {% endif %}
   </section>
 {% endblock %}

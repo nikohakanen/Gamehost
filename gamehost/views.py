@@ -18,7 +18,7 @@ def homeview(request):
     return render(request, 'home.html', {'games': game_list})
 
 
-@login_required
+@login_required(login_url='/login/')
 def profile(request, user_id):
     try:
         profile = User.objects.get(pk=user_id)
@@ -30,7 +30,7 @@ def profile(request, user_id):
         else:
             return render(request, 'profile.html', {'profile': profile})
 
-@login_required
+@login_required(login_url='/login/')
 def game(request, game_id):
     try:
         game = Game.objects.get(pk=game_id)

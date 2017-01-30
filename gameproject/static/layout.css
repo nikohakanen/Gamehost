@@ -50,9 +50,21 @@ header p {
   overflow: auto;
 }
 
+.game_box_dev {
+  border-style: solid;
+  border-width: 3px;
+  background-color: #dddddd;
+  border-radius: 8px;
+  position: relative;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  overflow: hidden;
+  width: 200px;
+}
+
  .game_thumbnail {
-  width: 150px;
-  height: 100px;
+  width: 200px;
+  height: 150px;
 }
 
 .right {
@@ -64,5 +76,5 @@ header p {
 }
 
 .game {
-  
+
 }

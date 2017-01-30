@@ -26,11 +26,13 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-12">
           {% for game in user.siteuser.game_set.all %}
             <div class="game_box inline">
-              <h1>{{ game.name }}</h1>
-              <img class="game_thumbnail" src={{ game.thumbnail }}>
+              <a href="/game/{{ game.id }}/">
+                <h1>{{ game.name }}</h1>
+                <img class="game_thumbnail" src={{ game.thumbnail }}>
+              </a>
             </div>
           {% endfor %}
         </div>
