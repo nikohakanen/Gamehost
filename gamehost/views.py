@@ -34,12 +34,12 @@ def profile(request, user_id):
 def add_game(request):
     if request.user.siteuser.developer_status == False:
         return render(request, 'message.html', {'message': 'Please register as a developer if you want to add games.'})
-    if request.method == 'POST':
+    elif request.method == 'POST':
         game_form = GameForm(request.POST)
-
+        
         if game_form.is_valid():
             newgame = game_form.save(commit=False)
-            newgame.developer = request.user.siteuser # !!! or request.user ???
+            newgame.developer = request.user.siteuser
             newgame.save()
             game_form.save_m2m() #save the many-to-many data for the form
             return render(request, 'message.html', {'message': 'Your game was added!'})

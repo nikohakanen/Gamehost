@@ -384,6 +384,12 @@ class ModelsTestCase(TestCase):
 class ViewsTestCase(TestCase):
     def setUp(self):
         self.client = Client()
+        #Users have to be created with .create_user for the password to be properly hashed and salted
+        kalle = User.objects.create_user(username='kalle12', email='kalle@k.fi', password='1234')
+        lauri = User.objects.create_user(username='lauri45', email='lauri@l.fi', password='haha3')
+        lauri.siteuser.developer_status = True
+        kalle.save()
+        lauri.save()
 
     def test_register(self):
         response1 = self.client.post('/register/', {'user-username': 'Dean', 'user-password': 'secret', 'user-email': 'dean@dena.fi', 'siteuser-developer_status': True})
@@ -396,7 +402,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(mail.outbox[0].subject, 'Your activation link')
 
         #Test that the user can't login before activating the account
-        response2 = self.client.post('/login/', {'username': 'Dean', 'password': 'secret'})
+        response2 = self.client.post('/login/', {'username': 'Dean', 'password': 'secret'}) #, follow=True) --- replace to follow redirect
         self.assertFormError(response2, 'form', None, 'This account is inactive.', msg_prefix='')
 
         #Get the activation link from the email message
@@ -417,4 +423,24 @@ class ViewsTestCase(TestCase):
         self.assertEqual(response4.context['form'].non_field_errors() != '', True)
 
     def test_add_game(self):
-        pass
+        kalle = User.objects.get(username='kalle12')
+        lauri = User.objects.get(username='lauri45')
+
+        # Test that you can't add a game without being a developer
+        self.client.post('/login/', {'username': 'kalle12', 'password': '1234'})
+        response1 = self.client.post('/add_game/', {'name': 'DumbGame', 'category': 'shooting', 'src': 'http://webcourse.cs.hut.fi/example_game.html', 'price': 999, 'thumbnail': 'https://lh4.googleusercontent.com/V4hvlhzKgNsJnVFYph5D4lOgBXHfbZYLjGYbpNfLUI-Hzd1ljq-qR_8pkyaunAogdp5zw5M6yB9wP-26h3odIzDI_yY5cNwQoolq7YLZMI35D0LyIrROaOFeNTfp8ZNWqA' }, follow=True)
+        self.assertEqual(('Please register as a developer if you want to add games.' in response1.content), True)
+        self.client.get('/logout/')
+
+        # Test that you can add a game as a developer
+        self.client.post('/login/', {'username': 'lauri45', 'password': 'haha3'}, follow=True)
+        response2 = self.client.post('/add_game/', {'name': 'DumbGame', 'category': 'shooting', 'src': 'http://webcourse.cs.hut.fi/example_game.html', 'price': 999, 'thumbnail': 'https://lh4.googleusercontent.com/V4hvlhzKgNsJnVFYph5D4lOgBXHfbZYLjGYbpNfLUI-Hzd1ljq-qR_8pkyaunAogdp5zw5M6yB9wP-26h3odIzDI_yY5cNwQoolq7YLZMI35D0LyIrROaOFeNTfp8ZNWqA' })
+        self.assertEqual(('Your game was added!' in response2.content), True)
+
+        game = Game.objects.get(name='DumbGame')
+        self.assertEqual(game.name, 'DumbGame')
+        self.assertEqual(game.category, 'shooting')
+        self.assertEqual(game.developer, lauri.siteuser)
+        self.assertEqual(game.src, 'http://webcourse.cs.hut.fi/example_game.html')
+        self.assertEqual(game.price, 999)
+        self.assertEqual(game.thumbnail, 'https://lh4.googleusercontent.com/V4hvlhzKgNsJnVFYph5D4lOgBXHfbZYLjGYbpNfLUI-Hzd1ljq-qR_8pkyaunAogdp5zw5M6yB9wP-26h3odIzDI_yY5cNwQoolq7YLZMI35D0LyIrROaOFeNTfp8ZNWqA')
