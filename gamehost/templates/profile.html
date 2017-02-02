@@ -19,6 +19,16 @@
           <h1> Developer information</h1>
           <!-- Might need formatting -->
           <p><a href="/add_game/">Add new game</a></p>
+          <h3>Sales statistics</h3>
+          {% for game in {{ games }}}
+            <h6>{{ game.name }}</h6>
+            {% for t in transactions %}
+              {% if game = t.game %}
+                <p>t.date</p>
+                <p>t.price</p>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
           <!-- Might need formatting -->
         </div>
 
