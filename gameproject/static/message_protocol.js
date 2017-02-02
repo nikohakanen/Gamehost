@@ -15,7 +15,7 @@ $(document).ready(function () {
           data: { 'score': score, 'game': game,
             'user': user},
             success: function(res){
-              $(".highscores").html(res)
+              $(".highscores").html(res);
             }
         });
         break;

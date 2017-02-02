@@ -5,6 +5,19 @@
     var game = '{{ game }}';
     var user = '{{ user }}';
   </script>
+  <script>
+    $(document).ready(function(){
+      $("#edit_game").click(function(){
+        $.ajax({
+          url: '/editgame/{{ game.id }}/',
+          data: {'user': user, 'game': game},
+          success: function(res){
+            $(".game_info").html(res);
+          }
+        });
+      });
+    });
+  </script>
 
   <section class="container">
     <div class="row">
@@ -31,14 +44,13 @@
     <div class="row">
       <h3>Developer options</h3>
       <div class="col-sm-4">
-        <p class="dev_op">Change price</p>
-        <p class="dev_op">Change thumbnail</p>
-        <p class="dev_op">Change category</p>
-        <p class="dev_op">Change URL</p>
+        <a><p class="dev_op" id="edit_game">Edit game</p></a>
         <p class="dev_op">Show sales statistics</p>
         <p class="dev_op">Remove game</p>
       </div>
       <div class="col-sm-6 game_info">
+        {% block game_edits %}
+        {% endblock %}
       </div>
     </div>
     {% endif %}

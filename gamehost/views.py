@@ -36,7 +36,7 @@ def add_game(request):
         return render(request, 'message.html', {'message': 'Please register as a developer if you want to add games.'})
     elif request.method == 'POST':
         game_form = GameForm(request.POST)
-        
+
         if game_form.is_valid():
             newgame = game_form.save(commit=False)
             newgame.developer = request.user.siteuser
@@ -62,6 +62,38 @@ def game(request, game_id):
                                              'has_purchased': has_purchased,
                                              'highscores': highscores,
                                              'user': request.user})
+
+@login_required(login_url='/login/')
+def edit_game(request, game_id):
+    try:
+        game = Game.objects.get(pk=game_id)
+    except Game.DoesNotExist:
+        raise Http404("Game not found!")
+    else:
+        if request.method == 'POST':
+            game_form = GameForm(request.POST)
+
+            if game_form.is_valid():
+                game = Game.objects.get(pk=game_id)
+                game.name = game_form.cleaned_data['name']
+                game.category = game_form.cleaned_data['category']
+                game.price = game_form.cleaned_data['price']
+                game.src = game_form.cleaned_data['src']
+                game.thumbnail = game_form.cleaned_data['thumbnail']
+                game.save()
+                return render(request,
+                              'message.html', {'message': 'Changes saved'})
+        else:
+            if int(request.user.id) is not int(game.developer.user.id):
+                return HttpResponse("Permission denied.")
+            else:
+                data = {'name': game.name, 'category': game.category,
+                        'price': game.price, 'src': game.src,
+                        'thumbnail': game.thumbnail}
+                form = GameForm(initial=data)
+                return render(request,
+                              'edit_game.html',
+                              {'game_form': form, 'game': game})
 
 
 def add_highscore(request):
