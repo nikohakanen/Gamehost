@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404, JsonResponse
-from gamehost.models import Game, Highscore, Savedata
+from gamehost.models import Game, Highscore, Savedata, Transaction
 from gamehost.forms import UserForm, SiteUserForm, GameForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -9,6 +9,7 @@ from datetime import timedelta
 from django.core.signing import TimestampSigner, SignatureExpired
 from django.core import signing, mail
 import json
+import datetime
 
 # Create your views here.
 
@@ -28,7 +29,14 @@ def profile(request, user_id):
         if int(request.user.id) is not int(user_id):
             return HttpResponse("Permission denied")
         else:
-            return render(request, 'profile.html', {'profile': profile})
+            games = ''  #hotfix
+            transactions = '' #hotfix
+            if profile.siteuser.developer_status:
+                #Get sales statistics for the developer
+                games = Game.objects.filter(developer=profile.siteuser)
+                transactions = Transaction.objects.filter(game__in=games)
+
+            return render(request, 'profile.html', {'profile': profile, 'games': games, 'transactions': transactions})
 
 @login_required(login_url='/login/')
 def add_game(request):
