@@ -91,6 +91,8 @@ def edit_game(request, game_id):
                 game.save()
                 return render(request,
                               'message.html', {'message': 'Changes saved'})
+            else:
+                return HttpResponse('Something went wrong trying to edit')
         else:
             if int(request.user.id) is not int(game.developer.user.id):
                 return HttpResponse("Permission denied.")
