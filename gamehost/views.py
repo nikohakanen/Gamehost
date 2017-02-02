@@ -29,6 +29,8 @@ def profile(request, user_id):
         if int(request.user.id) is not int(user_id):
             return HttpResponse("Permission denied")
         else:
+            games = ''  #hotfix
+            transactions = '' #hotfix
             if profile.siteuser.developer_status:
                 #Get sales statistics for the developer
                 games = Game.objects.filter(developer=profile.siteuser)
