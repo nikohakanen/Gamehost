@@ -1,0 +1,18 @@
+{% block game_edits %}
+<h3>Edit the game information</h3>
+
+<form action="/editgame/{{ game.id }}/" method="POST">
+  {% csrf_token %}
+  {% for field in game_form %}
+    <div class="fieldWrapper">
+      {{ field.errors }}
+      {{ field.label_tag }} {{ field }}
+      {% if field.help_text %}
+        <p class="help"> {{ field.help_text|safe }}</p>
+      {% endif %}
+    </div>
+  {% endfor %}
+  <input type="submit" value="Submit" />
+</form>
+
+{% endblock %}
