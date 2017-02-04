@@ -8,8 +8,7 @@ from django.contrib.auth.models import User
 from datetime import timedelta
 from django.core.signing import TimestampSigner, SignatureExpired
 from django.core import signing, mail
-import json
-import datetime
+import json, datetime
 
 # Create your views here.
 
@@ -29,14 +28,35 @@ def profile(request, user_id):
         if int(request.user.id) is not int(user_id):
             return HttpResponse("Permission denied")
         else:
-            games = ''  #hotfix
-            transactions = '' #hotfix
             if profile.siteuser.developer_status:
                 #Get sales statistics for the developer
                 games = Game.objects.filter(developer=profile.siteuser)
-                transactions = Transaction.objects.filter(game__in=games)
+                #trans = []
+                totals = {}
+                datelist = {}
+                now = datetime.datetime.today()
+                today = datetime.date(now.year, now.month, now.day)
+                i = 0
+                for g in games:
 
-            return render(request, 'profile.html', {'profile': profile, 'games': games, 'transactions': transactions})
+                    transactions = Transaction.objects.filter(game=g)
+                    totals.update({g.name: transactions.count()})
+                    #trans.append(transactions)
+
+                    dates = []
+                    day_count = (today - g.publish_date).days + 1
+                    for single_date in (g.publish_date + timedelta(n) for n in range(day_count)):
+                        daily_data = []
+                        daily_data.append(single_date)
+                        dailytrans = transactions.filter(date=single_date).count()
+                        daily_data.append(dailytrans)
+                        dates.append(daily_data)
+                    datelist.update({g.name: dates})
+
+                print(totals)
+                return render(request, 'profile.html', {'profile': profile, 'games': games, 'totalSalesList': totals, 'datelist': datelist})#, 'transactions': transactions})
+            else:
+                return render(request, 'profile.html', {'profile': profile})
 
 @login_required(login_url='/login/')
 def add_game(request):

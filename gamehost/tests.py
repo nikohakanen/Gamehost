@@ -444,3 +444,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(game.src, 'http://webcourse.cs.hut.fi/example_game.html')
         self.assertEqual(game.price, 999)
         self.assertEqual(game.thumbnail, 'https://lh4.googleusercontent.com/V4hvlhzKgNsJnVFYph5D4lOgBXHfbZYLjGYbpNfLUI-Hzd1ljq-qR_8pkyaunAogdp5zw5M6yB9wP-26h3odIzDI_yY5cNwQoolq7YLZMI35D0LyIrROaOFeNTfp8ZNWqA')
+
+    def test_statistics(self):
+        self.client.post('/login/', {'username': 'dev', 'password': 'dev'})
+        self.client.get('/profile/')

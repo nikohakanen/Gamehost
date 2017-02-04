@@ -4,7 +4,7 @@
   <section class="container">
     <div class="row">
       <div class="col-sm-6">
-        <h1> Profile: {{ user.username }}</h1>
+        <h2> Profile: {{ user.username }}</h2>
       </div>
     </div>
     <div class="row">
@@ -16,17 +16,38 @@
     {% if user.siteuser.developer_status %}
       <div class="row">
         <div class="col-sm-6">
-          <h1> Developer information</h1>
+          <h3> Developer information</h3>
           <!-- Might need formatting -->
           <p><a href="/add_game/">Add new game</a></p>
-          <h3>Sales statistics</h3>
+          <h4>Sales statistics</h4>
+
+          <div>
+            {% for game in games %}
+            <dl>
+              <dt>{{ game.name }}</dt>
+              {% for gamename, value in totalSalesList.items %}
+                {% if gamename == game.name %}
+                  <dd>Total sales: {{ value }}</dd>
+                {% endif %}
+              {% endfor %}
+              {% for gamename, list in datelist.items %}
+                {% if gamename == game.name %}
+                  {% for day in list %}
+                    <dd>{{ day.0 }} Sales: {{ day.1 }}</dd>
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+            </dl>
+            {% endfor %}
+          </div>
+          <!-- Might need formatting -->
         </div>
 
       </div>
       {% if user.siteuser.game_set.count > 0 %}
       <div class="row">
         <div class="col-sm-6">
-          <p> Own games </p>
+          <h3> Own games </h3>
         </div>
       </div>
       <div class="row">
