@@ -6,9 +6,9 @@ from django.db import migrations
 from django.contrib.auth.hashers import make_password
 
 def add_initial_data(apps, schema_editor):
+    db_alias = schema_editor.connection.alias
     User = apps.get_model("auth", "User")
     SiteUser = apps.get_model("gamehost", "SiteUser")
-    db_alias = schema_editor.connection.alias
     user = User.objects.using(db_alias).create(username="user", password=make_password("user"))
     SiteUser.objects.using(db_alias).create(user=user)
     dev = User.objects.using(db_alias).create(username="dev", password=make_password("dev"))
@@ -17,12 +17,35 @@ def add_initial_data(apps, schema_editor):
                                                 is_superuser=True, is_staff=True)
     SiteUser.objects.using(db_alias).create(user=admin, developer_status=True)
 
+    Game = apps.get_model("gamehost", "Game")
+    one = Game.objects.using(db_alias).create(name="one", developer=dev.siteuser, price=10,
+                                        src="http://webcourse.cs.hut.fi/example_game.html",
+                                        thumbnail="http://placehold.it/150x150")
+    two = Game.objects.using(db_alias).create(name="two", developer=dev.siteuser, price=20,
+                                        src="http://webcourse.cs.hut.fi/example_game.html",
+                                        thumbnail="http://placehold.it/250x250")
+
+    Highscore = apps.get_model("gamehost", "Highscore")
+    Highscore.objects.using(db_alias).create(game=one, player=user.siteuser, score=100)
+    Highscore.objects.using(db_alias).create(game=one, player=user.siteuser, score=90)
+    Highscore.objects.using(db_alias).create(game=one, player=dev.siteuser, score=50)
+    Highscore.objects.using(db_alias).create(game=one, player=admin.siteuser, score=9999999999999)
+    Highscore.objects.using(db_alias).create(game=two, player=user.siteuser, score=200)
+    Highscore.objects.using(db_alias).create(game=two, player=dev.siteuser, score=52)
+    Highscore.objects.using(db_alias).create(game=two, player=admin.siteuser, score=-99)
+
+    Transaction = apps.get_model("gamehost", "Transaction")
+    Transaction.objects.using(db_alias).create(game=one, player=admin.siteuser, price=-10)
+    Transaction.objects.using(db_alias).create(game=two, player=admin.siteuser, price=-20)
+
+
 def remove_initial_data(apps, schema_editor):
-    User = apps.get_model("auth", "User")
     db_alias = schema_editor.connection.alias
+    User = apps.get_model("auth", "User")
     User.objects.using(db_alias).filter(username="user").delete()
     User.objects.using(db_alias).filter(username="dev").delete()
     User.objects.using(db_alias).filter(username="admin").delete()
+
 
 class Migration(migrations.Migration):
 
