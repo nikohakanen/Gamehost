@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404, JsonResponse
 from gamehost.models import Game, Highscore, Savedata, Transaction
 from gamehost.forms import UserForm, SiteUserForm, GameForm
-from django.contrib.auth import authenticate, login, logout
+#from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from datetime import timedelta
@@ -177,9 +177,9 @@ def load_game(request):
                             'info': 'Gamestate could not be loaded.'})
 
 
-def logout_view(request):
-    logout(request)
-    return render(request, 'message.html', {'message': 'Logged out.'})
+#def logout_view(request):
+    #logout(request)
+    #return render(request, 'message.html', {'message': 'Logged out.'})
 
 
 def register(request):

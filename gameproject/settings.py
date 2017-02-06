@@ -136,8 +136,8 @@ STATICFILES_DIRS = [
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-LOGIN_REDIRECT_URL= '/home/'
-LOGOUT_URL= '/home/'
-LOGOUT_REDIRECT_URL= '/home/'
+LOGIN_URL= r'/login/'
+LOGIN_REDIRECT_URL= r'/home/'
+LOGOUT_REDIRECT_URL= r'/home/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

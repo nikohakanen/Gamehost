@@ -17,16 +17,19 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from gamehost import views
 from django.views.generic import TemplateView
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    url('^', include('django.contrib.auth.urls')),    # Authentication urls
+    #url('^', include('django.contrib.auth.urls')),    # Authentication urls
+    url(r'^login/$', auth_views.login, name="login"),
+    url(r'^logout/$', auth_views.logout, {'next_page': r'/home/'}, name="logout"),
     url(r'^$', views.homeview, name="homeview"),
     url(r'^home/$', views.homeview, name="homeview"),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/profile/(?P<user_id>[0-9]+)/$', views.profile),
     url(r'^register/$', views.register),
     url(r'^activate/(?P<key>.*)/?$', views.activate),
-    url(r'^logout_page/', views.logout_view),
+    #url(r'^logout_page/', views.logout_view),
     url(r'^game/(?P<game_id>[0-9]+)/$', views.game),
     url(r'^add_game/$', views.add_game),
     url(r'^addscore/$', views.add_highscore),
