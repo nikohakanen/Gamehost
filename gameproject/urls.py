@@ -33,5 +33,6 @@ urlpatterns = [
     url(r'^savegame/$', views.save_game),
     url(r'^loadgame/$', views.load_game),
     url(r'^editgame/(?P<game_id>[0-9]+)/$', views.edit_game),
+    url(r'^deletegame/(?P<game_id>[0-9]+)/$', views.delete_game),
     #url(r'^index/', include('gamehost.urls')),
 ]

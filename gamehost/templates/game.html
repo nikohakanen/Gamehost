@@ -16,6 +16,15 @@
           }
         });
       });
+      $("#remove_game").click(function(){
+        $.ajax({
+          url: '/deletegame/{{ game.id }}/',
+          data: {'user': user, 'game': game},
+          success: function(res){
+            $(".game_info").html(res);
+          }
+        });
+      });
     });
   </script>
 
@@ -46,7 +55,7 @@
       <div class="col-sm-4">
         <a><p class="dev_op" id="edit_game">Edit game</p></a>
         <p class="dev_op">Show sales statistics</p>
-        <p class="dev_op">Remove game</p>
+        <a><p class="dev_op" id="remove_game">Remove game</p></a>
       </div>
       <div class="col-sm-6 game_info">
         {% block game_edits %}

@@ -10,6 +10,7 @@ from django.core.signing import TimestampSigner, SignatureExpired
 from django.core import signing, mail
 import json, datetime
 
+
 # Create your views here.
 
 # Just to test how the views worked again.
@@ -101,7 +102,7 @@ def edit_game(request, game_id):
         if request.method == 'POST':
             game_form = GameForm(request.POST)
 
-            if game_form.is_valid():
+            if game_form.is_valid() and (int(request.user.id) is int(game.developer.user.id)):
                 game = Game.objects.get(pk=game_id)
                 game.name = game_form.cleaned_data['name']
                 game.category = game_form.cleaned_data['category']
@@ -125,6 +126,24 @@ def edit_game(request, game_id):
                               'edit_game.html',
                               {'game_form': form, 'game': game})
 
+
+@login_required(login_url='/login/')
+def delete_game(request, game_id):
+    try:
+        game = Game.objects.get(pk=game_id)
+    except Game.DoesNotExist:
+        raise Http404("Game not found!")
+    else:
+        if request.method == "POST":
+            if int(request.user.id) is int(game.developer.user.id):
+                game.delete()
+                return HttpResponse("Game deleted")
+            else:
+                return HttpResponse("Permission Denied")
+        else:
+            return render(request,
+                          'delete_game.html',
+                          {'object': game})
 
 def add_highscore(request):
     score = Highscore()
