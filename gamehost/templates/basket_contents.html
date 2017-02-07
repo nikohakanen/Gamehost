@@ -1,0 +1,17 @@
+{% if games %}
+<table>
+  <tr>
+    <th>Game</th>
+    <th>Price</th>
+  </tr>
+  {% for game in games %}
+  <tr>
+    <th>{{ game.name }}</th>
+    <th>{{ game.price }} €</th>
+    <th> <button type="button">Remove</button> </th>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p> Basket is empty.</p>
+{% endif %}

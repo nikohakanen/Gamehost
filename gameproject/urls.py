@@ -37,5 +37,8 @@ urlpatterns = [
     url(r'^loadgame/$', views.load_game),
     url(r'^editgame/(?P<game_id>[0-9]+)/$', views.edit_game),
     url(r'^deletegame/(?P<game_id>[0-9]+)/$', views.delete_game),
+    url(r'^add_to_basket/(?P<game_id>[0-9]+)/$', views.add_to_basket, name="add_to_basket"),
+    url(r'^remove_from_basket/(?P<game_id>[0-9]+)/$', views.remove_from_basket, name="remove_from_basket"),
+    url(r'^basket/$', views.basket, name="basket"),
     #url(r'^index/', include('gamehost.urls')),
 ]

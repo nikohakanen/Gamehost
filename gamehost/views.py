@@ -177,6 +177,31 @@ def load_game(request):
                             'info': 'Gamestate could not be loaded.'})
 
 
+def add_to_basket(request, game_id):
+    if "basket" in request.session:
+        request.session["basket"].add(game_id)
+        request.session.modified = True
+    else:
+        request.session["basket"] = set(game_id)
+    return HttpResponse("Added {} to basket".format(game_id))
+
+def remove_from_basket(request, game_id):
+    if "basket" in request.session:
+        request.session["basket"].remove(game_id)
+        request.session.modified = True
+    return HttpResponse("Removed {} from basket".format(game_id))
+
+def basket(request):
+    games = []
+    if "basket" in request.session:
+        for game_id in request.session["basket"]:
+            try:
+                games.append(Game.objects.get(id=game_id))
+            except:
+                pass
+    return render(request, "basket.html", {"games": games})
+
+
 #def logout_view(request):
     #logout(request)
     #return render(request, 'message.html', {'message': 'Logged out.'})

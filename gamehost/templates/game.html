@@ -25,6 +25,9 @@
           }
         });
       });
+      $("#add_to_basket").click(function() {
+          $.ajax("/add_to_basket/{{ game.id }}/");
+      });
     });
   </script>
 
@@ -42,7 +45,7 @@
         {% else %}
         <image id="img" src={{ game.thumbnail }}>
         <h6> Price: {{ game.price }}</h6>
-        <button type="button">Purchase</button>
+        <button type="button" id="add_to_basket">Add to Basket</button>
         {% endif %}
       </div>
       <div class="col-sm-4 highscores">

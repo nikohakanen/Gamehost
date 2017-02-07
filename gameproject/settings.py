@@ -141,3 +141,5 @@ LOGIN_REDIRECT_URL= r'/home/'
 LOGOUT_REDIRECT_URL= r'/home/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SESSION_SERIALIZER = "django.contrib.sessions.serializers.PickleSerializer"
