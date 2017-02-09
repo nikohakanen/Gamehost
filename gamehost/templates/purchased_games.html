@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="container">
+    <div class="row">
+      <h1> {{ user.username }}'s purchased games </h1>
+    </div>
+    <div class="row">
+      {% for game in user.siteuser.game_set.all %}
+        <div class="game_box inline">
+          <a href="/game/{{ game.id }}/">
+            <h1>{{ game.name }}</h1>
+            <img class="game_thumbnail" src={{ game.thumbnail }}>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+{% endblock %}

@@ -145,6 +145,21 @@ def delete_game(request, game_id):
                           'delete_game.html',
                           {'object': game})
 
+@login_required(login_url='/login/')
+def purchased_games(request, user_id):
+    try:
+        user_profile = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        raise Http404("User not found.")
+    else:
+        if int(request.user.id) is not int(user_id):
+            return HttpResponse("Permission denied.")
+        else:
+            return render(
+                            request,
+                            'purchased_games.html',
+                            {'user': user_profile})
+
 def add_highscore(request):
     score = Highscore()
     game = Game.objects.get(name=request.GET.get('game'))
