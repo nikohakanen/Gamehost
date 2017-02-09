@@ -14,26 +14,22 @@
 
 {% block content %}
 
-{% if games %}
 <section class="container">
-  <div class="col-sm-6">
-    {% for g in games %}
-    <a href="/game/{{ g.id }}/">
-      <div class="row game_box">
-        <h1>{{ g.name }}</h1>
-        <img class="game_thumbnail right" src= {{g.thumbnail}}>
-        <h3>{{ g.category }}</h3>
-        <p>Price: {{ g.price }}€</p>
-        <p class="developer_name"> Developer: {{ g.developer.user.username }}</p>
-
-      </div>
-    </a>
-    {% endfor %}
+  <div class="col-sm-6" id="games_div">
+    {% block games %}
+    {% endblock %}
   </div>
+
+
+{% block search %}
+  <div class="col-sm-6">
+    <h3 class="filter"> Filters </p>
+    <a class="filter" id="all_filter"><p> All Games </p></a>
+    <a class="filter" id="strategy_filter"><p> Strategy </p></a>
+    <a class="filter" id="shooting_filter"><p> Shooting </p></a>
+    <a class="filter" id="arcade_filter"><p> Arcade </p></a>
+    <a class="filter" id="adventure_filter"><p> Adventure </p></a>
+  </div>
+{% endblock %}
 </section>
-
-{% else %}
-No games available.
-{% endif %}
-
 {% endblock %}

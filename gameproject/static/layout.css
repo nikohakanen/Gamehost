@@ -78,3 +78,8 @@ header p {
 .game {
 
 }
+
+.filter {
+  float: right;
+  clear: right;
+}

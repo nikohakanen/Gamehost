@@ -15,8 +15,8 @@ import json, datetime
 
 # Just to test how the views worked again.
 def homeview(request):
-    game_list = Game.objects.all()
-    return render(request, 'home.html', {'games': game_list})
+    #game_list = Game.objects.all()
+    return render(request, 'home.html', {})
 
 
 @login_required(login_url='/login/')
@@ -91,6 +91,16 @@ def game(request, game_id):
                                              'has_purchased': has_purchased,
                                              'highscores': highscores,
                                              'user': request.user})
+
+def games(request):
+    genre = request.GET.get('genre')
+
+    if genre == "all":
+        games = Game.objects.all()
+        return render(request, 'games.html', {'games': games})
+    else:
+        games = Game.objects.filter(category=genre)
+        return render(request, 'games.html', {'games': games})
 
 @login_required(login_url='/login/')
 def edit_game(request, game_id):

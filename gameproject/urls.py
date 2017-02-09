@@ -41,5 +41,6 @@ urlpatterns = [
     url(r'^remove_from_basket/(?P<game_id>[0-9]+)/$', views.remove_from_basket, name="remove_from_basket"),
     url(r'^basket/$', views.basket, name="basket"),
     url(r'^purchased_games/(?P<user_id>[0-9]+)/$', views.purchased_games),
+    url(r'^games/$', views.games),
     #url(r'^index/', include('gamehost.urls')),
 ]
