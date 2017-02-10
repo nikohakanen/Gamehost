@@ -214,9 +214,10 @@ def remove_from_basket(request, game_id):
     if "basket" in request.session:
         request.session["basket"].remove(game_id)
         request.session.modified = True
-    return HttpResponse("Removed {} from basket".format(game_id))
+    contents = get_basket_contents(request)
+    return render(request, "basket_contents.html", contents)
 
-def basket(request):
+def get_basket_contents(request):
     games = []
     total = 0
     if "basket" in request.session:
@@ -229,7 +230,11 @@ def basket(request):
                 # Remove invalid item from basket
                 request.session["basket"].remove(game_id)
                 request.session.modified = True
-    return render(request, "basket.html", {"games": games, "total": total})
+    return {"games": games, "total": total}
+
+def basket(request):
+    contents = get_basket_contents(request)
+    return render(request, "basket.html", contents)
 
 
 #def logout_view(request):

@@ -1,4 +1,14 @@
 {% if games %}
+<script>
+    $(document).ready(function(){
+        $(".remove").click(function() {
+            $.ajax("/remove_from_basket/" + this.id + "/",
+                 {success: function(res){
+                     $("div#basket").html(res);
+                 }});
+        });
+    });
+</script>
 <table>
   <tr>
     <th>Game</th>
@@ -8,7 +18,7 @@
   <tr>
     <th>{{ game.name }}</th>
     <th>{{ game.price }} €</th>
-    <th> <button type="button">Remove</button> </th>
+    <th> <button type="button" class="remove" id="{{ game.id }}">Remove</button> </th>
   </tr>
   {% endfor %}
   <tr>
