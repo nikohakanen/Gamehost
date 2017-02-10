@@ -218,13 +218,18 @@ def remove_from_basket(request, game_id):
 
 def basket(request):
     games = []
+    total = 0
     if "basket" in request.session:
         for game_id in request.session["basket"]:
             try:
-                games.append(Game.objects.get(id=game_id))
+                game = Game.objects.get(id=game_id);
+                total += game.price;
+                games.append(game)
             except:
-                pass
-    return render(request, "basket.html", {"games": games})
+                # Remove invalid item from basket
+                request.session["basket"].remove(game_id)
+                request.session.modified = True
+    return render(request, "basket.html", {"games": games, "total": total})
 
 
 #def logout_view(request):
