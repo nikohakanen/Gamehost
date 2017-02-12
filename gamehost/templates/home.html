@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block js-block %}
+  <script src="{% static 'search_functions.js' %}" type='text/javascript'></script>
+{% endblock %}
 
 {% block decoration %}
 <section class="jumbotron">

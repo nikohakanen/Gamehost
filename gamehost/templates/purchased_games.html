@@ -8,7 +8,7 @@
     <div class="row">
       {% for transaction in user.siteuser.get_transactions %}
         <div class="game_box inline">
-          <a href="/game/{{ game.id }}/">
+          <a href="/game/{{ transaction.game.id }}/">
             <h1>{{ transaction.game.name }}</h1>
             <img class="game_thumbnail" src={{ transaction.game.thumbnail }}>
           </a>
