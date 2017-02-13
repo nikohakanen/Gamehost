@@ -18,7 +18,7 @@ class SiteUser(models.Model):
         transactions = Transaction.objects.filter(player=self)
         return transactions
 
-    # How to handle the money?
+    # DEPRECATED
     def purchase_game(self, game):
         Transaction.objects.create(
             player=self,
@@ -28,10 +28,10 @@ class SiteUser(models.Model):
 
     def has_purchased_game(self, game):
         query = Transaction.objects.filter(player=self, game=game)
-        if query.count() >= 1:
-            return True
-        else:
-            return False
+        for transaction in query:
+            if transaction.payment.status == Payment.SUCCESS:
+                return True
+        return False
 
 
 @receiver(post_save, sender=User)
@@ -135,11 +135,33 @@ class Highscore(models.Model):
         return "{}".format(self.score)
 
 
+class Payment(models.Model):
+    # Failed payments will be deleted
+    IN_PROGRESS = 'in_progress'
+    SUCCESS = 'success'
+    STATUS_CHOICES = (
+        (IN_PROGRESS, 'in_progress'),
+        (SUCCESS, 'success'),
+    )
+    category = models.TextField(
+        choices=STATUS_CHOICES,
+        default=IN_PROGRESS
+    )
+    date = models.DateField(auto_now=False, auto_now_add=True)
+    total = models.DecimalField(decimal_places=2, max_digits=9)
+
+
 class Transaction(models.Model):
     player = models.ForeignKey(SiteUser)
     game = models.ForeignKey(Game)
     price = models.DecimalField(decimal_places=2, max_digits=6)
     date = models.DateField(auto_now=False, auto_now_add=True)
+
+    def default_payment():
+        payment = Payment.objects.create(total=0)
+        return payment.id
+
+    payment = models.ForeignKey(Payment, default=default_payment, on_delete=models.CASCADE)
 
     def __str__(self):
         return "{}".format(self.game)

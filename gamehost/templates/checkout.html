@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3> Basket </h3>
+<div id="basket">
+{% include "basket_contents.html" %}
+</div>
+
+<form action="http://payments.webcourse.niksula.hut.fi/pay/" method="POST">
+    <input type="hidden" name="pid" value="{{ pid }}" />
+    <input type="hidden" name="sid" value="{{ sid }}" />
+    <input type="hidden" name="success_url" value="{{ host }}{% url 'payment_success' %}"/>
+    <input type="hidden" name="cancel_url" value="{{ host }}{% url 'payment_cancel' %}" />
+    <input type="hidden" name="error_url" value="{{ host }}{% url 'payment_error' %}" />
+    <input type="hidden" name="checksum" value="{{ checksum }}" />
+    <input type="hidden" name="amount" value="{{ total }}" />
+    <input type="hidden" name="dev" value="test" />
+    <input type="submit" value="Proceed to Payment"/>
+</form>
+
+{% endblock %}
