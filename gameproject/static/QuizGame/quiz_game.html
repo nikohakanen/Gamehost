@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <title> VERY SERIOUS QUIZ </title>
+    <link rel="stylesheet" href="quiz_game.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" type='text/javascript'></script>
+    <script src="quiz_game.js"></script>
+  </head>
+  <body>
+
+    <h1> VERY SERIOUS QUIZ </h1>
+    <div class="div_game_question">
+      <p id="welcome">Welcome to very serious quiz! <p>
+      <p id="game_question">Ready to begin?</p>
+    </div>
+    <div class="div_game_answers">
+      <div>
+        <button class="answer" id="answer0">Begin</button>
+        <button class="answer hide" id="answer1">ANSWER1</button>
+        <button class="answer hide" id="answer2">ANSWER2</button>
+      </div>
+      <div>
+        <button class="answer hide" id="answer3">ANSWER3</button>
+        <button class="answer hide" id="answer4">ANSWER4</button>
+      </div>
+    </div>
+    <div class="div_game_info">
+      <div>
+        <br>
+        <p style="display:inline;">Score: </p>
+        <p id="score" style="display:inline;">0</p>
+      </div>
+      <div>
+        <p style="display:inline;">Question </p>
+        <p id="question_number" style="display:inline;">0</p>
+        <p style="display:inline;">/5</p>
+      </div>
+      <div>
+        <button id="save">Save</button>
+        <button id="load">Load</button>
+      </div>
+    </div>
+  </body>
+
+</html>

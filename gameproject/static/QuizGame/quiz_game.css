@@ -1,0 +1,11 @@
+.answer{
+  width: 100px;
+}
+
+.hide{
+  visibility:hidden;
+}
+
+.remove{
+  display:none;
+}
