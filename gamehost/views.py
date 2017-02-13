@@ -2,14 +2,17 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404, JsonResponse
 from gamehost.models import Game, Highscore, Savedata, Transaction
 from gamehost.forms import UserForm, SiteUserForm, GameForm
-#from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from datetime import timedelta
 from django.core.signing import TimestampSigner, SignatureExpired
 from django.core import signing, mail
-import json, datetime
 
+import json, datetime
+from hashlib import md5
+
+PAYMENT_ID = "sid271828"
+PAYMENT_KEY = "9846b7da3d25fc3b6ece0b753a47b099"
 
 # Create your views here.
 
@@ -202,46 +205,6 @@ def load_game(request):
                             'info': 'Gamestate could not be loaded.'})
 
 
-def add_to_basket(request, game_id):
-    if "basket" in request.session:
-        request.session["basket"].add(game_id)
-        request.session.modified = True
-    else:
-        request.session["basket"] = set(game_id)
-    return HttpResponse("Added {} to basket".format(game_id))
-
-def remove_from_basket(request, game_id):
-    if "basket" in request.session:
-        request.session["basket"].remove(game_id)
-        request.session.modified = True
-    contents = get_basket_contents(request)
-    return render(request, "basket_contents.html", contents)
-
-def get_basket_contents(request):
-    games = []
-    total = 0
-    if "basket" in request.session:
-        for game_id in request.session["basket"]:
-            try:
-                game = Game.objects.get(id=game_id);
-                total += game.price;
-                games.append(game)
-            except:
-                # Remove invalid item from basket
-                request.session["basket"].remove(game_id)
-                request.session.modified = True
-    return {"games": games, "total": total}
-
-def basket(request):
-    contents = get_basket_contents(request)
-    return render(request, "basket.html", contents)
-
-
-#def logout_view(request):
-    #logout(request)
-    #return render(request, 'message.html', {'message': 'Logged out.'})
-
-
 def register(request):
     if request.user.is_authenticated():
         return redirect(homeview)
@@ -290,3 +253,60 @@ def activate(request, key):
         return render(request, 'message.html', {'message': "The activation link has been expired"})
     except signing.BadSignature:
         raise Http404("Invalid activation link")
+
+def add_to_basket(request, game_id):
+    if "basket" in request.session:
+        request.session["basket"].add(game_id)
+        request.session.modified = True
+    else:
+        request.session["basket"] = set(game_id)
+    return HttpResponse("Added {} to basket".format(game_id))
+
+def remove_from_basket(request, game_id):
+    if "basket" in request.session:
+        request.session["basket"].remove(game_id)
+        request.session.modified = True
+    contents = get_basket_contents(request)
+    return render(request, "basket_contents.html", contents)
+
+def get_basket_contents(request):
+    games = []
+    total = 0
+    if "basket" in request.session:
+        for game_id in request.session["basket"]:
+            try:
+                game = Game.objects.get(id=game_id);
+                total += game.price;
+                games.append(game)
+            except:
+                # Remove invalid item from basket
+                request.session["basket"].remove(game_id)
+                request.session.modified = True
+    return {"games": games, "total": total, "modifiable": True}
+
+def basket(request):
+    contents = get_basket_contents(request)
+    return render(request, "basket.html", contents)
+
+def checkout(request):
+    pid = "asd"
+    contents = get_basket_contents(request)
+    contents["modifiable"] = False
+    contents["pid"] = pid
+    contents["sid"] = PAYMENT_ID
+    check_str = "pid={}&sid={}&amount={}&token={}".format(pid, PAYMENT_ID, contents["total"],
+                                                          PAYMENT_KEY)
+    m = md5(check_str.encode("ascii"))
+    checksum = m.hexdigest()
+    contents["checksum"] = checksum
+    contents["host"] = "http://" + request.get_host()
+    return render(request, "checkout.html", contents)
+
+def payment_success(request):
+    return render(request, "message.html", {"message": "payment_success"})
+
+def payment_cancel(request):
+    return render(request, "message.html", {"message": "payment_cancel"})
+
+def payment_error(request):
+    return render(request, "message.html", {"message": "payment_error"})
