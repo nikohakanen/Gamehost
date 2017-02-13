@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404, JsonResponse
-from gamehost.models import Game, Highscore, Savedata, Transaction
+from gamehost.models import Game, Highscore, Savedata, Transaction, Payment
 from gamehost.forms import UserForm, SiteUserForm, GameForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -288,13 +288,16 @@ def basket(request):
     contents = get_basket_contents(request)
     return render(request, "basket.html", contents)
 
+@login_required(login_url='/login/')
 def checkout(request):
-    pid = "asd"
     contents = get_basket_contents(request)
+    payment = Payment.objects.create(total=contents["total"])
+    for game in contents["games"]:
+        Transaction.objects.create(player=request.user.siteuser, game=game, payment=payment, price=game.price)
     contents["modifiable"] = False
-    contents["pid"] = pid
+    contents["pid"] = payment.id
     contents["sid"] = PAYMENT_ID
-    check_str = "pid={}&sid={}&amount={}&token={}".format(pid, PAYMENT_ID, contents["total"],
+    check_str = "pid={}&sid={}&amount={}&token={}".format(payment.id, PAYMENT_ID, contents["total"],
                                                           PAYMENT_KEY)
     m = md5(check_str.encode("ascii"))
     checksum = m.hexdigest()
@@ -303,10 +306,36 @@ def checkout(request):
     return render(request, "checkout.html", contents)
 
 def payment_success(request):
-    return render(request, "message.html", {"message": "payment_success"})
+    if "pid" in request.GET:
+        try:
+            payment = Payment.objects.get(id=request.GET["pid"])
+            payment.status = payment.SUCCESS
+            payment.save()
+        except:
+            return redirect(payment_lost)
+        return render(request, "message.html", {"message": "Payment was succesfull"})
+    else:
+        return redirect(payment_lost)
 
 def payment_cancel(request):
-    return render(request, "message.html", {"message": "payment_cancel"})
+    if "pid" in request.GET:
+        try:
+            Payment.objects.get(id=request.GET["pid"]).delete()
+        except:
+            return redirect(payment_lost)
+        return render(request, "message.html", {"message": "Payment was cancelled."})
+    else:
+        return redirect(payment_lost)
 
 def payment_error(request):
-    return render(request, "message.html", {"message": "payment_error"})
+    if "pid" in request.GET:
+        try:
+            Payment.objects.get(id=request.GET["pid"]).delete()
+        except:
+            return redirect(payment_lost)
+        return render(request, "message.html", {"message": "Error with you payment."})
+    else:
+        return redirect(payment_lost)
+
+def payment_lost(request):
+    return render(request, "message.html", {"message": "Sorry, we lost your payment."})
