@@ -143,7 +143,7 @@ class Payment(models.Model):
         (IN_PROGRESS, 'in_progress'),
         (SUCCESS, 'success'),
     )
-    category = models.TextField(
+    status = models.TextField(
         choices=STATUS_CHOICES,
         default=IN_PROGRESS
     )
