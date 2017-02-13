@@ -18,7 +18,9 @@
   <tr>
     <th>{{ game.name }}</th>
     <th>{{ game.price }} €</th>
-    <th> <button type="button" class="remove" id="{{ game.id }}">Remove</button> </th>
+    {% if modifiable %}
+      <th> <button type="button" class="remove" id="{{ game.id }}">Remove</button> </th>
+    {% endif %}
   </tr>
   {% endfor %}
   <tr>
