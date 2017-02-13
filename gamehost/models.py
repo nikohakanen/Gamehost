@@ -158,7 +158,7 @@ class Transaction(models.Model):
     date = models.DateField(auto_now=False, auto_now_add=True)
 
     def default_payment():
-        payment = Payment.objects.create(total=0)
+        payment = Payment.objects.create(total=0, status=Payment.SUCCESS)
         return payment.id
 
     payment = models.ForeignKey(Payment, default=default_payment, on_delete=models.CASCADE)
