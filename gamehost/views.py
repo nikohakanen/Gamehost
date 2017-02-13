@@ -269,6 +269,11 @@ def remove_from_basket(request, game_id):
     contents = get_basket_contents(request)
     return render(request, "basket_contents.html", contents)
 
+def empty_basket(request):
+    """Empty the basket contents"""
+    request.session["basket"] = set()
+    request.session.modified = True
+
 def get_basket_contents(request):
     games = []
     total = 0
@@ -311,6 +316,7 @@ def payment_success(request):
             payment = Payment.objects.get(id=request.GET["pid"])
             payment.status = payment.SUCCESS
             payment.save()
+            empty_basket(request)
         except:
             return redirect(payment_lost)
         return render(request, "message.html", {"message": "Payment was succesfull"})
