@@ -18,14 +18,6 @@ class SiteUser(models.Model):
         transactions = Transaction.objects.filter(player=self, payment__status=Payment.SUCCESS)
         return transactions
 
-    # DEPRECATED
-    def purchase_game(self, game):
-        Transaction.objects.create(
-            player=self,
-            game=game,
-            price=game.price
-        )
-
     def has_purchased_game(self, game):
         query = Transaction.objects.filter(player=self, game=game, payment__status=Payment.SUCCESS)
         if query.count() >= 1:

@@ -369,18 +369,6 @@ class ModelsTestCase(TestCase):
             ordered=False
         )
 
-    def test_purchase(self):
-        kalle = User.objects.get(username="kalle12")
-        mario = Game.objects.get(name="Super Mario")
-
-        # Remove existing transactions.
-        Transaction.objects.all().delete()
-
-        self.assertEqual(kalle.siteuser.transaction_set.count(), 0)
-
-        kalle.siteuser.purchase_game(mario)
-        self.assertEqual(kalle.siteuser.transaction_set.count(), 1)
-
 class ViewsTestCase(TestCase):
     def setUp(self):
         self.client = Client()
@@ -416,7 +404,7 @@ class ViewsTestCase(TestCase):
 
         #Test that the user can now login
         response3 = self.client.post('/login/', {'username': 'Dean', 'password': 'secret'})
-        self.assertEqual(response3.content, '')
+        self.assertEqual(response3.content, b'')
 
         #Test that an user that hasn't been registered can't login
         response4 = self.client.post('/login/', {'username': 'FakeUser', 'password': 'fakesecret'})
@@ -429,13 +417,13 @@ class ViewsTestCase(TestCase):
         # Test that you can't add a game without being a developer
         self.client.post('/login/', {'username': 'kalle12', 'password': '1234'})
         response1 = self.client.post('/add_game/', {'name': 'DumbGame', 'category': 'shooting', 'src': 'http://webcourse.cs.hut.fi/example_game.html', 'price': 999, 'thumbnail': 'https://lh4.googleusercontent.com/V4hvlhzKgNsJnVFYph5D4lOgBXHfbZYLjGYbpNfLUI-Hzd1ljq-qR_8pkyaunAogdp5zw5M6yB9wP-26h3odIzDI_yY5cNwQoolq7YLZMI35D0LyIrROaOFeNTfp8ZNWqA' }, follow=True)
-        self.assertEqual(('Please register as a developer if you want to add games.' in response1.content), True)
+        self.assertEqual((b'Please register as a developer if you want to add games.' in response1.content), True)
         self.client.get('/logout/')
 
         # Test that you can add a game as a developer
         self.client.post('/login/', {'username': 'lauri45', 'password': 'haha3'}, follow=True)
         response2 = self.client.post('/add_game/', {'name': 'DumbGame', 'category': 'shooting', 'src': 'http://webcourse.cs.hut.fi/example_game.html', 'price': 999, 'thumbnail': 'https://lh4.googleusercontent.com/V4hvlhzKgNsJnVFYph5D4lOgBXHfbZYLjGYbpNfLUI-Hzd1ljq-qR_8pkyaunAogdp5zw5M6yB9wP-26h3odIzDI_yY5cNwQoolq7YLZMI35D0LyIrROaOFeNTfp8ZNWqA' })
-        self.assertEqual(('Your game was added!' in response2.content), True)
+        self.assertEqual((b'Your game was added!' in response2.content), True)
 
         game = Game.objects.get(name='DumbGame')
         self.assertEqual(game.name, 'DumbGame')
