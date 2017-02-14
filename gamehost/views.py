@@ -51,14 +51,14 @@ def profile(request, user_id):
                     day_count = (today - g.publish_date).days + 1
                     for single_date in (g.publish_date + timedelta(n) for n in range(day_count)):
                         daily_data = []
-                        daily_data.append(single_date)
+                        daily_data.append(single_date.isoformat())
                         dailytrans = transactions.filter(date=single_date).count()
                         daily_data.append(dailytrans)
                         dates.append(daily_data)
                     datelist.update({g.name: dates})
 
-                print(totals)
-                return render(request, 'profile.html', {'profile': profile, 'games': games, 'totalSalesList': totals, 'datelist': datelist})#, 'transactions': transactions})
+                datelistj = json.dumps(datelist)
+                return render(request, 'profile.html', {'profile': profile, 'games': games, 'totalSalesList': totals, 'datelistj': datelistj})#, 'transactions': transactions})
             else:
                 return render(request, 'profile.html', {'profile': profile})
 

@@ -3,6 +3,13 @@
 
 {% block js-block %}
   <script src="{% static 'show_hide.js' %}" type='text/javascript'></script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script>
+    'use strict'
+    var a = {{ datelistj|safe }};
+  </script>
+
 {% endblock %}
 
 {% block content %}
@@ -29,24 +36,23 @@
           <div class="gamestatsparent">
             {% for game in games %}
             <div class="gamestats">
-              <h5>{{ game.name }}</h6>
+              <h5>{{ game.name }}</h5>
               {% for gamename, value in totalSalesList.items %}
                 {% if gamename == game.name %}
                 <p>Total sales: {{ value }}</p>
                 <p class="show_chart">Show details</p>
+
+                <div class="chart">
+                  <div id="{{ game.name }}" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                  <script src="{% static 'charts.js' %}" type="text/javascript"></script>
+
+                  <p class="hide_chart">Hide details</p>
+                </div>
                 {% endif %}
               {% endfor %}
 
-              <div class="chart">
-              {% for gamename, list in datelist.items %}
-                {% if gamename == game.name %}
-                  {% for day in list %}
-                    <p>{{ day.0 }} Sales: {{ day.1 }}</p>
-                  {% endfor %}
-                {% endif %}
-              {% endfor %}
-                <p class="hide_chart">Hide details</p>
-              </div>
+
+
             </div>
             {% endfor %}
           </div>
