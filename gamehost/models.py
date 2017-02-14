@@ -142,17 +142,14 @@ class Payment(models.Model):
     date = models.DateField(auto_now=False, auto_now_add=True)
     total = models.DecimalField(decimal_places=2, max_digits=9)
 
+def default_payment():
+    payment = Payment.objects.create(total=0, status=Payment.SUCCESS)
+    return payment.id
 
 class Transaction(models.Model):
     player = models.ForeignKey(SiteUser)
     game = models.ForeignKey(Game)
     price = models.DecimalField(decimal_places=2, max_digits=6)
-
-    @staticmethod
-    def default_payment():
-        payment = Payment.objects.create(total=0, status=Payment.SUCCESS)
-        return payment.id
-
     payment = models.ForeignKey(Payment, default=default_payment, on_delete=models.CASCADE)
 
     def __str__(self):

@@ -30,6 +30,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='transaction',
             name='payment',
-            field=models.ForeignKey(default=gamehost.models.Transaction.default_payment, on_delete=django.db.models.deletion.CASCADE, to='gamehost.Payment'),
+            field=models.ForeignKey(default=gamehost.models.default_payment, on_delete=django.db.models.deletion.CASCADE, to='gamehost.Payment'),
         ),
     ]
