@@ -148,6 +148,7 @@ class Transaction(models.Model):
     game = models.ForeignKey(Game)
     price = models.DecimalField(decimal_places=2, max_digits=6)
 
+    @staticmethod
     def default_payment():
         payment = Payment.objects.create(total=0, status=Payment.SUCCESS)
         return payment.id
