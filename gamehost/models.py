@@ -15,7 +15,7 @@ class SiteUser(models.Model):
     registration_date = models.DateField(auto_now=False, auto_now_add=True)
 
     def get_transactions(self):
-        transactions = Transaction.objects.filter(player=self)
+        transactions = Transaction.objects.filter(player=self, payment__status=Payment.SUCCESS)
         return transactions
 
     # DEPRECATED
@@ -27,11 +27,11 @@ class SiteUser(models.Model):
         )
 
     def has_purchased_game(self, game):
-        query = Transaction.objects.filter(player=self, game=game)
-        for transaction in query:
-            if transaction.payment.status == Payment.SUCCESS:
-                return True
-        return False
+        query = Transaction.objects.filter(player=self, game=game, payment__status=Payment.SUCCESS)
+        if query.count() >= 1:
+            return True
+        else:
+            return False
 
 
 @receiver(post_save, sender=User)
@@ -108,7 +108,7 @@ class Game(models.Model):
             return msg
 
     def get_transactions(self):
-        return Transaction.objects.filter(game=self)
+        return Transaction.objects.filter(game=self, payment__status=Payment.SUCCESS)
 
     def get_highscores(self, user, own):
         if (own):
@@ -155,7 +155,6 @@ class Transaction(models.Model):
     player = models.ForeignKey(SiteUser)
     game = models.ForeignKey(Game)
     price = models.DecimalField(decimal_places=2, max_digits=6)
-    date = models.DateField(auto_now=False, auto_now_add=True)
 
     def default_payment():
         payment = Payment.objects.create(total=0, status=Payment.SUCCESS)

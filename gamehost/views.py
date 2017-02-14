@@ -43,7 +43,7 @@ def profile(request, user_id):
                 i = 0
                 for g in games:
 
-                    transactions = Transaction.objects.filter(game=g)
+                    transactions = Transaction.objects.filter(game=g, payment__status=Payment.SUCCESS)
                     totals.update({g.name: transactions.count()})
                     #trans.append(transactions)
 
@@ -52,7 +52,7 @@ def profile(request, user_id):
                     for single_date in (g.publish_date + timedelta(n) for n in range(day_count)):
                         daily_data = []
                         daily_data.append(single_date)
-                        dailytrans = transactions.filter(date=single_date).count()
+                        dailytrans = transactions.filter(payment__date=single_date).count()
                         daily_data.append(dailytrans)
                         dates.append(daily_data)
                     datelist.update({g.name: dates})
