@@ -1,4 +1,5 @@
 $(document).ready(function(){
+  'use strict'
   // Setting up the search filters.
   $("#all_filter").click(function(){
     filter_all("all");
