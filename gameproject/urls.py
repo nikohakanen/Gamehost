@@ -44,4 +44,5 @@ urlpatterns = [
     url(r'^checkout/success/$', views.payment_success, name="payment_success"),
     url(r'^checkout/cancel/$', views.payment_cancel, name="payment_cancel"),
     url(r'^checkout/error/$', views.payment_error, name="payment_error"),
+    url(r'^checkout/lost/$', views.payment_lost, name="payment_lost"),
 ]

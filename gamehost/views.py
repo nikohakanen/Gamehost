@@ -315,19 +315,21 @@ def payment_success(request):
     if "pid" in request.GET:
         try:
             payment = Payment.objects.get(id=request.GET["pid"])
-            check_str = "pid={}&sid={}&amount={}&token={}".format(payment.id, PAYMENT_ID, payment.total,
-                                                                  PAYMENT_KEY)
+            ref = request.GET["ref"]
+            result = request.GET["result"]
+            check_str = "pid={}&ref={}&result={}&token={}".format(payment.id, ref, result, PAYMENT_KEY)
             m = md5(check_str.encode("ascii"))
             checksum = m.hexdigest()
-            if checksum == request.GET["checksum"]:
+            if result == "success" and checksum == request.GET["checksum"]:
                 payment.status = payment.SUCCESS
                 payment.save()
                 empty_basket(request)
+                return render(request, "message.html", {"message": "Payment was succesfull"})
             else:
-                redirect(payment_error)
+                payment.delete()
+                return redirect(payment_error)
         except:
             return redirect(payment_lost)
-        return render(request, "message.html", {"message": "Payment was succesfull"})
     else:
         return redirect(payment_lost)
 
@@ -336,20 +338,16 @@ def payment_cancel(request):
         try:
             Payment.objects.get(id=request.GET["pid"]).delete()
         except:
-            return redirect(payment_lost)
-        return render(request, "message.html", {"message": "Payment was cancelled."})
-    else:
-        return redirect(payment_lost)
+            pass
+    return render(request, "message.html", {"message": "Payment was cancelled."})
 
 def payment_error(request):
     if "pid" in request.GET:
         try:
             Payment.objects.get(id=request.GET["pid"]).delete()
         except:
-            return redirect(payment_lost)
-        return render(request, "message.html", {"message": "Error with you payment."})
-    else:
-        return redirect(payment_lost)
+            pass
+    return render(request, "message.html", {"message": "Error with you payment."})
 
 def payment_lost(request):
     return render(request, "message.html", {"message": "Sorry, we lost your payment."})
