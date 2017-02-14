@@ -278,7 +278,8 @@ def get_basket_contents(request):
     games = []
     total = 0
     if "basket" in request.session:
-        for game_id in request.session["basket"]:
+        # Iterate a copy so removals work
+        for game_id in request.session["basket"].copy():
             try:
                 game = Game.objects.get(id=game_id);
                 total += game.price;
@@ -314,9 +315,16 @@ def payment_success(request):
     if "pid" in request.GET:
         try:
             payment = Payment.objects.get(id=request.GET["pid"])
-            payment.status = payment.SUCCESS
-            payment.save()
-            empty_basket(request)
+            check_str = "pid={}&sid={}&amount={}&token={}".format(payment.id, PAYMENT_ID, payment.total,
+                                                                  PAYMENT_KEY)
+            m = md5(check_str.encode("ascii"))
+            checksum = m.hexdigest()
+            if checksum == request.GET["checksum"]:
+                payment.status = payment.SUCCESS
+                payment.save()
+                empty_basket(request)
+            else:
+                redirect(payment_error)
         except:
             return redirect(payment_lost)
         return render(request, "message.html", {"message": "Payment was succesfull"})
