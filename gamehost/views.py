@@ -260,7 +260,7 @@ def add_to_basket(request, game_id):
         request.session.modified = True
     else:
         request.session["basket"] = set(game_id)
-    return HttpResponse("Added {} to basket".format(game_id))
+    return render(request, "message.html", {"message": "Added {} to basket".format(game_id)})
 
 def remove_from_basket(request, game_id):
     if "basket" in request.session:
