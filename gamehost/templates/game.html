@@ -49,8 +49,8 @@
         <p id="last_saved"></p>
         {% else %}
         <image id="img" src={{ game.thumbnail }}>
-        <h6> Price: {{ game.price }}</h6>
-        <button type="button" id="add_to_basket">Add to Basket</button>
+        <p class="text-info"> Price: {{ game.price }} €</p>
+        <button type="button" id="add_to_basket" class="btn btn-primary">Add to Basket</button>
         {% endif %}
       </div>
       <div class="col-sm-4 highscores">

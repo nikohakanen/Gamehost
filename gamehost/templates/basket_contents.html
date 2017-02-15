@@ -9,25 +9,29 @@
         });
     });
 </script>
-<table>
+<table class="table table-striped">
   <tr>
-    <th>Game</th>
-    <th>Price</th>
+    <th class="col-xs-3">Game</th>
+    <th class="col-xs-2">Price</th>
+    <th class="col-xs-1"></th>
   </tr>
   {% for game in games %}
   <tr>
-    <th>{{ game.name }}</th>
-    <th>{{ game.price }} €</th>
+    <td>{{ game.name }}</td>
+    <td>{{ game.price }} €</td>
     {% if modifiable %}
-      <th> <button type="button" class="remove" id="{{ game.id }}">Remove</button> </th>
+      <td> <button type="button" class="remove btn btn-warning btn-sm btn-block" id="{{ game.id }}">Remove</button> </td>
+    {% else %}
+      <td></td>
     {% endif %}
   </tr>
   {% endfor %}
   <tr>
     <th>Total</th>
     <th>{{ total }} €</th>
+    <th></th>
   </tr>
 </table>
 {% else %}
-<p> Basket is empty.</p>
+<p class="text-info"> Basket is empty.</p>
 {% endif %}

@@ -2,30 +2,33 @@
 
 {% block content %}
 
-<p>Please fill in your information to register.</p>
+<p class="text-primary">Please fill in your information to register.</p>
 
-<form action="/register/" method="post">
+<form action="/register/" method="post" class="form-horizontal">
     {% csrf_token %}
     <!--{{ user_form.as_table }}!-->
     {% for field in user_form %}
-      <div class="fieldWrapper">
+      <div class="fieldWrapper form-group">
         {{ field.errors }}
         {{ field.label_tag}} {{ field }}
         {% if field.help_text %}
-          <p class="help"> {{ field.help_text|safe }}</p>
+          <p class="help text-info"> {{ field.help_text|safe }}</p>
         {% endif %}
       </div>
     {% endfor %}
     {% for field in siteuser_form %}
-      <div class="fieldWrapper">
+      <div class="fieldWrapper form-group">
         {{ field.errors }}
         {{ field.label_tag}} {{ field }}
         {% if field.help_text %}
-          <p class="help"> {{ field.help_text|safe }}</p>
+          <p class="help text-info"> {{ field.help_text|safe }}</p>
         {% endif %}
+      </div>
     {% endfor %}
     <!--{{ siteuser_form.as_table }}!-->
-    <input type="submit" value="Submit" />
+    <div class="form-group">
+      <input type="submit" value="Submit" class="btn btn-primary"/>
+    </div>
 </form>
 
 {% endblock %}

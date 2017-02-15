@@ -1,4 +1,9 @@
 <h3> Highscores </h3>
+<table class="table table-striped">
 {% for score in highscores %}
-  <p> {{ score.score }} {{ score.player.user.username }} </p>
+  <tr>
+    <td>{{ score.score }}</td>
+    <td>{{ score.player.user.username }}</td>
+  </tr>
 {% endfor %}
+</table>

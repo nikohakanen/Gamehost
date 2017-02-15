@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div id="basket" class="container">
 <h3> Basket </h3>
-<div id="basket">
 {% include "basket_contents.html" %}
+
+{% if games %}
+<button type="button" class="btn btn-primary btn-block" onclick="location.href='{% url 'checkout' %}';">Checkout</button>
+{% endif %}
 </div>
-<button type="button" onclick="location.href='{% url 'checkout' %}';">Checkout</button>
 
 {% endblock %}

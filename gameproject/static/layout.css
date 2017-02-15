@@ -1,3 +1,7 @@
+body {
+    padding-top: 50px;
+}
+
 #topbar li {
   display: inline;
 }
