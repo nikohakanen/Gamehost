@@ -38,7 +38,7 @@ def add_initial_data(apps, schema_editor):
     Highscore.objects.using(db_alias).create(game=one, player=user.siteuser, score=100)
     Highscore.objects.using(db_alias).create(game=one, player=user.siteuser, score=90)
     Highscore.objects.using(db_alias).create(game=one, player=dev.siteuser, score=50)
-    Highscore.objects.using(db_alias).create(game=one, player=admin.siteuser, score=9999999999999)
+    Highscore.objects.using(db_alias).create(game=one, player=admin.siteuser, score=999999)
     Highscore.objects.using(db_alias).create(game=two, player=user.siteuser, score=200)
     Highscore.objects.using(db_alias).create(game=two, player=dev.siteuser, score=52)
     Highscore.objects.using(db_alias).create(game=two, player=admin.siteuser, score=-99)
