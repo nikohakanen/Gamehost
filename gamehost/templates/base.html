@@ -38,7 +38,7 @@
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{% url 'login' %}" id="login">Login</a></li>
             <li><a href="/register/" id="register">Register</a></li>
-            <li><a href="{% url "social:begin" "google-oauth2" %}">Google+</a></li>
+            <li><a href="{% url 'social:begin' 'twitter' %}">Twitter</a></li>
           </ul>
           {% endif %}
         </div>
