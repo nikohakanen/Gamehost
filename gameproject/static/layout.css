@@ -25,8 +25,9 @@ header p {
 }
 
 .jumbotron {
-  background-image: url('http://www.queness.com/resources/images/jsgames2/1.jpg');
-  background-size: cover;
+  background-image: url('cube.jpg');
+  background-size: contain;
+  background-position: 0% 0%;
   color: #ffffff;
   height: 400px;
   align-items: center;
